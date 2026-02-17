@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+auth:
+  service:
+    url: http://pump-auth-service:8080
+
+logging:
+  level:
+    com.johnmartin.coaching: INFO
