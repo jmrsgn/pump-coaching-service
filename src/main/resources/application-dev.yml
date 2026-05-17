@@ -1,10 +1,18 @@
 server:
   port: 8082
 
-auth:
-  service:
-    url: http://localhost:8082
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pump_coaching
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+
+  jpa:
+    show-sql: false
 
 logging:
   level:
-    com.johnmartin.coaching: DEBUG
+    com.johnmartin.coaching: TRACE
