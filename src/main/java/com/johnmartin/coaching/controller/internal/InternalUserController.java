@@ -1,24 +1,25 @@
-package com.johnmartin.coaching.controller;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+package com.johnmartin.coaching.controller.internal;
 
 import com.johnmartin.coaching.constants.api.ApiConstants;
 import com.johnmartin.coaching.dto.request.CreateUserRequest;
 import com.johnmartin.coaching.dto.response.UserResponse;
 import com.johnmartin.coaching.dto.response.common.Result;
 import com.johnmartin.coaching.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
-@RequestMapping(ApiConstants.Path.API_USER)
-public class UserController {
+@RequestMapping(ApiConstants.InternalPath.API_USER_INTERNAL)
+public class InternalUserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public InternalUserController(UserService userService) {
         this.userService = userService;
     }
 

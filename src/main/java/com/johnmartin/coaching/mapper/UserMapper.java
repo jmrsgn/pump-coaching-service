@@ -1,5 +1,7 @@
 package com.johnmartin.coaching.mapper;
 
+import com.johnmartin.coaching.dto.AuthUser;
+import com.johnmartin.coaching.dto.internal.AuthUserResponse;
 import com.johnmartin.coaching.dto.response.UserResponse;
 import com.johnmartin.coaching.entity.UserEntity;
 
@@ -22,5 +24,13 @@ public class UserMapper {
                                 userEntity.getFitnessGoal(),
                                 userEntity.getCreatedAt(),
                                 userEntity.getUpdatedAt());
+    }
+
+    public static AuthUser toAuthUser(AuthUserResponse authUserResponse) {
+        return new AuthUser(authUserResponse.id(),
+                            authUserResponse.firstName(),
+                            authUserResponse.lastName(),
+                            authUserResponse.email(),
+                            authUserResponse.phone());
     }
 }

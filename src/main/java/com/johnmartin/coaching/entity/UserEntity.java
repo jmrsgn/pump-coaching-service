@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.Id;
 
 import com.johnmartin.coaching.constants.entities.UserEntityConstants;
 import com.johnmartin.coaching.enums.ActivityLevel;

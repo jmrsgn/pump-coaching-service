@@ -20,12 +20,6 @@ public final class ApiConstants {
 
         // User
         public static final String API_USER = API_BASE_V1 + "/user";
-        public static final String USER_INFO = "/{userId}";
-        public static final String FOLLOW = USER_INFO + "/follow";
-
-        // AI
-        public static final String API_AI = API_BASE_V1 + "/ai";
-        public static final String CAPTIONS = "/caption";
     }
 
     public static final class InternalPath {
@@ -35,7 +29,6 @@ public final class ApiConstants {
 
         public static final String API_USER_INTERNAL = API_BASE_V1_INTERNAL + "/user";
         public static final String CREATE_USER = "/create";
-        public static final String GET_USER = "/{userId}";
     }
 
     public static final class Params {
@@ -43,9 +36,7 @@ public final class ApiConstants {
         private Params() {
         }
 
-        public static final String POST_ID = "postId";
-        public static final String COMMENT_ID = "commentId";
-        public static final String USER_ID = "userId";
+        // add params here
     }
 
     public static final class HttpError {
