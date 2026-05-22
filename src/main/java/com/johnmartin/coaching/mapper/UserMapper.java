@@ -12,6 +12,7 @@ public class UserMapper {
 
     public static UserResponse toResponse(UserEntity userEntity) {
         return new UserResponse(userEntity.getId(),
+                                userEntity.getCoachId(),
                                 userEntity.getFirstName(),
                                 userEntity.getLastName(),
                                 userEntity.getProfileImageUrl(),

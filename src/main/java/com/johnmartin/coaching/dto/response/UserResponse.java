@@ -9,6 +9,7 @@ import com.johnmartin.coaching.enums.FitnessGoal;
 import com.johnmartin.coaching.enums.Gender;
 
 public record UserResponse(UUID id,
+                           UUID coachId,
                            String firstName,
                            String lastName,
                            String profileImageUrl,

@@ -11,7 +11,7 @@ import com.johnmartin.coaching.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateUserRequest(@NotNull UUID id,
+public record CreateUserRequest(@NotNull UUID coachId,
                                 @NotBlank(message = ValidationErrorConstants.FIRST_NAME_IS_REQUIRED) String firstName,
                                 @NotBlank(message = ValidationErrorConstants.LAST_NAME_IS_REQUIRED) String lastName,
                                 String profileImageUrl,

@@ -7,6 +7,7 @@ public final class UserEntityConstants {
 
     public static final String TABLE_NAME = "users";
     public static final String COLUMN_ID = "id";
+    public static final String COLUMN_COACH_ID = "coach_id";
     public static final String COLUMN_FIRST_NAME = "first_name";
     public static final String COLUMN_LAST_NAME = "last_name";
     public static final String COLUMN_PROFILE_IMAGE_URL = "profile_image_url";

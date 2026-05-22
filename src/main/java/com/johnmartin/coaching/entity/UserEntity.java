@@ -26,6 +26,9 @@ public class UserEntity {
     @Column(nullable = false, updatable = false, name = UserEntityConstants.COLUMN_ID)
     private UUID id;
 
+    @Column(nullable = false, updatable = false, name = UserEntityConstants.COLUMN_COACH_ID)
+    private UUID coachId;
+
     @Column(nullable = false, name = UserEntityConstants.COLUMN_FIRST_NAME)
     private String firstName;
 

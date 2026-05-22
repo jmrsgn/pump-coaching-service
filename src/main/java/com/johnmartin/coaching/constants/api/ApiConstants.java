@@ -19,7 +19,7 @@ public final class ApiConstants {
         public static final String HEALTH = "/health";
 
         // User
-        public static final String API_USER = API_BASE_V1 + "/user";
+        public static final String API_USERS = API_BASE_V1 + "/users";
     }
 
     public static final class InternalPath {
