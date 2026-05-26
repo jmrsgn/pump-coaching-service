@@ -28,7 +28,7 @@ public class CorrelationIdFilter extends BaseFilter {
             requestId = UUID.randomUUID().toString();
         }
 
-        LoggerUtility.d(clazz, "requestId: [%s]");
+        LoggerUtility.d(clazz, String.format("requestId: [%s]", requestId));
 
         MDC.put(SecurityConstants.HttpHeaders.REQUEST_ID, requestId);
         request.setAttribute(SecurityConstants.HttpHeaders.REQUEST_ID, requestId);

@@ -20,14 +20,6 @@ public final class ApiConstants {
 
         // User
         public static final String API_USERS = API_BASE_V1 + "/users";
-    }
-
-    public static final class InternalPath {
-
-        private InternalPath() {
-        }
-
-        public static final String API_USER_INTERNAL = API_BASE_V1_INTERNAL + "/user";
         public static final String CREATE_USER = "/create";
     }
 

@@ -1,6 +1,9 @@
 package com.johnmartin.coaching.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.johnmartin.coaching.constants.domain.UserConstants;
+import com.johnmartin.coaching.constants.error.SystemErrorConstants;
 
 import lombok.Getter;
 
@@ -14,6 +17,12 @@ public enum Gender {
         this.value = value;
     }
 
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @JsonCreator
     public static Gender fromValue(String value) {
         for (Gender gender : values()) {
             if (gender.value.equalsIgnoreCase(value)) {
@@ -21,6 +30,6 @@ public enum Gender {
             }
         }
 
-        throw new IllegalArgumentException("Invalid gender: " + value);
+        throw new IllegalArgumentException(SystemErrorConstants.INVALID_GENDER + ": " + value);
     }
 }

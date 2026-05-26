@@ -14,7 +14,7 @@ import com.johnmartin.coaching.security.custom.CustomAuthEntryPoint;
 import com.johnmartin.coaching.security.filter.AuthContextFilter;
 import com.johnmartin.coaching.security.filter.CorrelationIdFilter;
 import com.johnmartin.coaching.security.filter.RequestLoggingFilter;
-import com.johnmartin.coaching.service.client.AuthServiceClient;
+import com.johnmartin.coaching.service.internal.client.AuthServiceClient;
 
 @Configuration
 public class SecurityConfig {
@@ -30,8 +30,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthContextFilter authContextFilter(AuthServiceClient authService, ObjectMapper objectMapper) {
-        return new AuthContextFilter(authService, objectMapper);
+    public AuthContextFilter authContextFilter(AuthServiceClient authServiceClient, ObjectMapper objectMapper) {
+        return new AuthContextFilter(authServiceClient, objectMapper);
     }
 
     /**
@@ -60,9 +60,6 @@ public class SecurityConfig {
                                                                           + ApiConstants.Path.HEALTH,
                                                                           ApiConstants.Path.ACTUATOR + ApiConstants.Path.HEALTH
                                                                                                       + "/**")
-                                                         .permitAll()
-                                                         .requestMatchers(ApiConstants.InternalPath.API_USER_INTERNAL
-                                                                          + ApiConstants.InternalPath.CREATE_USER)
                                                          .permitAll()
                                                          .requestMatchers(ApiConstants.Path.ACTUATOR + "/**")
                                                          .denyAll()

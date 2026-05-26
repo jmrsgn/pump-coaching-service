@@ -1,16 +1,12 @@
 package com.johnmartin.coaching.constants.entities;
 
-public final class UserEntityConstants {
+public final class CoachProfileConstants {
 
-    private UserEntityConstants() {
+    private CoachProfileConstants() {
     }
 
-    public static final String TABLE_NAME = "users";
-    public static final String COLUMN_ID = "id";
-    public static final String COLUMN_COACH_ID = "coach_id";
-    public static final String COLUMN_FIRST_NAME = "first_name";
-    public static final String COLUMN_LAST_NAME = "last_name";
-    public static final String COLUMN_PROFILE_IMAGE_URL = "profile_image_url";
+    public static final String TABLE_NAME = "client_profiles";
+    public static final String COLUMN_USER_ID = "user_id";
     public static final String COLUMN_GENDER = "gender";
     public static final String COLUMN_BIRTH_DATE = "birth_date";
     public static final String COLUMN_HEIGHT_CM = "height_cm";
@@ -20,4 +16,15 @@ public final class UserEntityConstants {
     public static final String COLUMN_FITNESS_GOAL = "fitness_goal";
     public static final String COLUMN_CREATED_AT = "created_at";
     public static final String COLUMN_UPDATED_AT = "updated_at";
+
+    public static final class CoachClientRelationship {
+
+        private CoachClientRelationship() {
+        }
+
+        public static final String TABLE_NAME = "coach_client_relationships";
+        public static final String COLUMN_COACH_ID = "coach_id";
+        public static final String COLUMN_CLIENT_ID = "client_id";
+        public static final String COLUMN_STATUS = "status";
+    }
 }

@@ -1,4 +1,4 @@
-package com.johnmartin.coaching.service.client;
+package com.johnmartin.coaching.service.internal.client;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -21,22 +21,24 @@ import com.johnmartin.coaching.exceptions.UnauthorizedException;
 @Service
 public class AuthServiceClient {
 
-    private final RestClient authWebClient;
+    private final RestClient authServiceWebClient;
 
-    public AuthServiceClient(RestClient authWebClient) {
-        this.authWebClient = authWebClient;
+    public AuthServiceClient(RestClient authServiceWebClient) {
+        this.authServiceWebClient = authServiceWebClient;
     }
 
     @Retryable(retryFor = Exception.class, maxAttempts = ApiConstants.RETRIES_COUNT, backoff = @Backoff(delay = UIConstants.DELAY_2000))
     public AuthUserResponse validate(String authorizationHeader, String requestId) {
         try {
-            Result<AuthUserResponse> result = authWebClient.post()
-                                                           .uri(ExternalServiceConstants.PumpAuthService.API_VALIDATE)
-                                                           .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                                           .header(SecurityConstants.HttpHeaders.REQUEST_ID, requestId)
-                                                           .retrieve()
-                                                           .body(new ParameterizedTypeReference<>() {
-                                                           });
+            Result<AuthUserResponse> result = authServiceWebClient.post()
+                                                                  .uri(ExternalServiceConstants.PumpAuthService.API_VALIDATE)
+                                                                  .header(HttpHeaders.AUTHORIZATION,
+                                                                          authorizationHeader)
+                                                                  .header(SecurityConstants.HttpHeaders.REQUEST_ID,
+                                                                          requestId)
+                                                                  .retrieve()
+                                                                  .body(new ParameterizedTypeReference<>() {
+                                                                  });
 
             if (result == null || result.getData().isEmpty()) {
                 throw new RuntimeException(ExternalServiceErrorConstants.AUTH_USER_NOT_FOUND);

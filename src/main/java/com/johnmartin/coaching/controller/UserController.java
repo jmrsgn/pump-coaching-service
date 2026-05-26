@@ -1,12 +1,10 @@
 package com.johnmartin.coaching.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.johnmartin.coaching.constants.api.ApiConstants;
+import com.johnmartin.coaching.dto.request.CreateClientUserRequest;
 import com.johnmartin.coaching.dto.response.UserResponse;
 import com.johnmartin.coaching.dto.response.common.PagedResponse;
 import com.johnmartin.coaching.dto.response.common.Result;
@@ -28,5 +26,11 @@ public class UserController {
     public ResponseEntity<Result<PagedResponse<UserResponse>>> getUsers(@RequestParam(defaultValue = "0") @PositiveOrZero int page) {
         PagedResponse<UserResponse> users = userService.getUsers(page);
         return ResponseEntity.ok(Result.success(users));
+    }
+
+    @PostMapping(ApiConstants.Path.CREATE_USER)
+    public ResponseEntity<Result<Void>> createUser(@RequestBody CreateClientUserRequest request) {
+        userService.createUser(request);
+        return ResponseEntity.ok(Result.success(null));
     }
 }

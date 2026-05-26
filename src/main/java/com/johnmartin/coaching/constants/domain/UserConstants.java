@@ -18,4 +18,10 @@ public final class UserConstants {
 
     public final static String MALE = "Male";
     public final static String FEMALE = "Female";
+
+    public final static String COACH = "Coach";
+    public final static String CLIENT = "Client";
+
+    public final static String ACTIVE = "Active";
+    public final static String INACTIVE = "Inactive";
 }

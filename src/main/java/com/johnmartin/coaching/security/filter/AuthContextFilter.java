@@ -14,7 +14,7 @@ import com.johnmartin.coaching.dto.internal.AuthUserResponse;
 import com.johnmartin.coaching.exceptions.UnauthorizedException;
 import com.johnmartin.coaching.mapper.UserMapper;
 import com.johnmartin.coaching.security.AuthContext;
-import com.johnmartin.coaching.service.client.AuthServiceClient;
+import com.johnmartin.coaching.service.internal.client.AuthServiceClient;
 import com.johnmartin.coaching.utilities.LoggerUtility;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +24,11 @@ public class AuthContextFilter extends BaseFilter {
 
     private static final Class<AuthContextFilter> clazz = AuthContextFilter.class;
 
-    private final AuthServiceClient authService;
+    private final AuthServiceClient authServiceClient;
 
-    public AuthContextFilter(AuthServiceClient authService, ObjectMapper objectMapper) {
+    public AuthContextFilter(AuthServiceClient authServiceClient, ObjectMapper objectMapper) {
         super(objectMapper);
-        this.authService = authService;
+        this.authServiceClient = authServiceClient;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AuthContextFilter extends BaseFilter {
         LoggerUtility.d(clazz, String.format("requestId: [%s]", requestId));
 
         // Auth details will be handled in AuthService
-        AuthUserResponse authUserResponse = authService.validate(authHeader, requestId);
+        AuthUserResponse authUserResponse = authServiceClient.validate(authHeader, requestId);
         LoggerUtility.d(clazz, String.format("authUser: [%s]", authUserResponse));
 
         // Added entity with same fields for design
@@ -66,7 +66,6 @@ public class AuthContextFilter extends BaseFilter {
     @Override
     protected boolean shouldSkip(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return uri.startsWith(ApiConstants.Path.ACTUATOR)
-               || uri.startsWith(ApiConstants.InternalPath.API_USER_INTERNAL);
+        return uri.startsWith(ApiConstants.Path.ACTUATOR);
     }
 }
