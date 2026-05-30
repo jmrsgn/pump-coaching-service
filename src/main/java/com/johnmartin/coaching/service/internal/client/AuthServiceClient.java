@@ -14,7 +14,7 @@ import com.johnmartin.coaching.constants.api.ApiConstants;
 import com.johnmartin.coaching.constants.api.ExternalServiceConstants;
 import com.johnmartin.coaching.constants.error.AuthErrorConstants;
 import com.johnmartin.coaching.constants.error.ExternalServiceErrorConstants;
-import com.johnmartin.coaching.dto.internal.AuthUserResponse;
+import com.johnmartin.coaching.dto.response.internal.AuthUserResponse;
 import com.johnmartin.coaching.dto.response.common.Result;
 import com.johnmartin.coaching.exceptions.UnauthorizedException;
 

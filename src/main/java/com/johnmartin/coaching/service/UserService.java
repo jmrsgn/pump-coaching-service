@@ -1,7 +1,10 @@
 package com.johnmartin.coaching.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.jboss.logging.MDC;
 import org.springframework.data.domain.Page;
@@ -13,10 +16,11 @@ import com.johnmartin.coaching.constants.UIConstants;
 import com.johnmartin.coaching.constants.error.SystemErrorConstants;
 import com.johnmartin.coaching.constants.error.domain.UserErrorConstants;
 import com.johnmartin.coaching.dto.AuthUser;
-import com.johnmartin.coaching.dto.internal.SocialUserResponse;
 import com.johnmartin.coaching.dto.request.CreateClientUserRequest;
 import com.johnmartin.coaching.dto.response.ClientUserResponse;
 import com.johnmartin.coaching.dto.response.common.PagedResponse;
+import com.johnmartin.coaching.dto.response.internal.SocialUserResponse;
+import com.johnmartin.coaching.dto.response.internal.SocialUserSummaryResponse;
 import com.johnmartin.coaching.entity.ClientProfileEntity;
 import com.johnmartin.coaching.entity.CoachClientRelationshipEntity;
 import com.johnmartin.coaching.enums.CoachingStatus;
@@ -102,7 +106,7 @@ public class UserService {
 
     /**
      * Get clients under a coach
-     * 
+     *
      * @param page
      *            - page
      * @return List of UserResponse
@@ -113,19 +117,41 @@ public class UserService {
         // Get authenticated coach
         AuthUser authUser = authService.getAuthUser();
 
+        String requestId = MDC.get(SecurityConstants.HttpHeaders.REQUEST_ID).toString();
+
         // Build pagination
-        PageRequest pageRequest = PageRequest.of(page, UIConstants.MINIMUM_USERS);
         UUID coachId = UUID.fromString(authUser.id());
-        Page<ClientProfileEntity> usersPage = clientProfileRepository.findByCoachId(coachId, pageRequest);
-        List<ClientUserResponse> users = usersPage.getContent().stream().map(UserMapper::toResponse).toList();
-        LoggerUtility.d(clazz, String.format("users size: [%d]", users.size()));
+        PageRequest pageRequest = PageRequest.of(page, UIConstants.MINIMUM_USERS);
+        Page<ClientProfileEntity> profilesPage = clientProfileRepository.findByCoachId(coachId, pageRequest);
+        List<ClientProfileEntity> profiles = profilesPage.getContent();
+        LoggerUtility.logItemSize(clazz, "profiles", profiles);
+
+        // Extract userIds
+        List<String> userIds = profiles.stream().map(profile -> profile.getUserId().toString()).toList();
+
+        // Batch fetch social users
+        List<SocialUserSummaryResponse> socialUsers = socialServiceClient.getUsersByIds(userIds, requestId);
+        LoggerUtility.logItemSize(clazz, "socialUsers", socialUsers);
+
+        // Fast lookup map
+        Map<String, SocialUserSummaryResponse> socialUsersMap = socialUsers.stream()
+                                                                           .collect(Collectors.toMap(SocialUserSummaryResponse::id,
+                                                                                                     Function.identity()));
+
+        // Merge profile + social user
+        List<ClientUserResponse> users = profiles.stream().map(profile -> {
+            SocialUserSummaryResponse socialUser = socialUsersMap.get(profile.getUserId().toString());
+            return UserMapper.toResponse(profile, socialUser);
+        }).toList();
+
+        LoggerUtility.logItemSize(clazz, "users", users);
 
         return new PagedResponse<>(users,
-                                   usersPage.getNumber(),
-                                   usersPage.getSize(),
-                                   usersPage.getTotalElements(),
-                                   usersPage.getTotalPages(),
-                                   usersPage.hasNext());
+                                   profilesPage.getNumber(),
+                                   profilesPage.getSize(),
+                                   profilesPage.getTotalElements(),
+                                   profilesPage.getTotalPages(),
+                                   profilesPage.hasNext());
     }
 
     @Transactional

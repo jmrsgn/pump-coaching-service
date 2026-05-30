@@ -9,4 +9,6 @@ public final class ExternalServiceErrorConstants {
     public static final String AUTH_USER_NOT_FOUND = "Auth user not found";
     public static final String SOCIAL_USER_NOT_FOUND = "Social user not found";
     public static final String FAILED_TO_GET_SOCIAL_USER = "Failed to get social user";
+    public static final String SOCIAL_USERS_NOT_FOUND = "Social users not found";
+    public static final String FAILED_TO_GET_SOCIAL_USERS = "Failed to get social users";
 }

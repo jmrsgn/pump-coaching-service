@@ -2,6 +2,8 @@ package com.johnmartin.coaching.constants.api;
 
 public final class ExternalServiceConstants {
 
+    public static final String API_BASE_V1_INTERNAL = "/api/v1/internal";
+
     private ExternalServiceConstants() {
     }
 
@@ -22,6 +24,6 @@ public final class ExternalServiceConstants {
         private PumpSocialService() {
         }
 
-        public static final String API_GET_USER = "/api/v1/internal/user";
+        public static final String API_USER_INTERNAL = API_BASE_V1_INTERNAL + "/users";
     }
 }

@@ -1,5 +1,7 @@
 package com.johnmartin.coaching.utilities;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,5 +67,10 @@ public final class LoggerUtility {
         if (log.isTraceEnabled()) {
             log.trace(message, maskArgs(args));
         }
+    }
+
+    // Helper methods
+    public static <T> void logItemSize(Class<?> clazz, String itemType, List<T> items) {
+        d(clazz, String.format("[%s] size: [%s]", itemType, items.size()));
     }
 }

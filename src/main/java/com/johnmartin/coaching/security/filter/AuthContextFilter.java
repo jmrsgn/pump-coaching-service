@@ -10,7 +10,7 @@ import com.johnmartin.coaching.constants.SecurityConstants;
 import com.johnmartin.coaching.constants.api.ApiConstants;
 import com.johnmartin.coaching.constants.error.AuthErrorConstants;
 import com.johnmartin.coaching.dto.AuthUser;
-import com.johnmartin.coaching.dto.internal.AuthUserResponse;
+import com.johnmartin.coaching.dto.response.internal.AuthUserResponse;
 import com.johnmartin.coaching.exceptions.UnauthorizedException;
 import com.johnmartin.coaching.mapper.UserMapper;
 import com.johnmartin.coaching.security.AuthContext;

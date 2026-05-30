@@ -1,4 +1,4 @@
-package com.johnmartin.coaching.dto.internal;
+package com.johnmartin.coaching.dto.response.internal;
 
 public record SocialUserResponse(String id,
                                  String firstName,
