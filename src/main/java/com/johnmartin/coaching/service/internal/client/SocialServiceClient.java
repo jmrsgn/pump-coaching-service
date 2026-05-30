@@ -19,23 +19,23 @@ import com.johnmartin.coaching.exceptions.NotFoundException;
 @Service
 public class SocialServiceClient {
 
-    private final RestClient socialServiceWebClient;
+    private final RestClient socialServiceRestClient;
 
-    public SocialServiceClient(RestClient socialServiceWebClient) {
-        this.socialServiceWebClient = socialServiceWebClient;
+    public SocialServiceClient(RestClient socialServiceRestClient) {
+        this.socialServiceRestClient = socialServiceRestClient;
     }
 
     @Retryable(retryFor = Exception.class, maxAttempts = ApiConstants.RETRIES_COUNT, backoff = @Backoff(delay = UIConstants.DELAY_2000))
     public SocialUserResponse getSocialUserById(String userId, String requestId) {
         try {
-            Result<SocialUserResponse> result = socialServiceWebClient.get()
-                                                                      .uri(ExternalServiceConstants.PumpSocialService.API_GET_USER
-                                                                           + "/" + userId)
-                                                                      .header(SecurityConstants.HttpHeaders.REQUEST_ID,
-                                                                              requestId)
-                                                                      .retrieve()
-                                                                      .body(new ParameterizedTypeReference<>() {
-                                                                      });
+            Result<SocialUserResponse> result = socialServiceRestClient.get()
+                                                                       .uri(ExternalServiceConstants.PumpSocialService.API_GET_USER
+                                                                            + "/" + userId)
+                                                                       .header(SecurityConstants.HttpHeaders.REQUEST_ID,
+                                                                               requestId)
+                                                                       .retrieve()
+                                                                       .body(new ParameterizedTypeReference<>() {
+                                                                       });
 
             if (result == null || result.getData().isEmpty()) {
                 throw new RuntimeException(ExternalServiceErrorConstants.SOCIAL_USER_NOT_FOUND);
