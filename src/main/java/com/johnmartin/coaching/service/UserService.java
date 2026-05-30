@@ -1,23 +1,28 @@
 package com.johnmartin.coaching.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.jboss.logging.MDC;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.johnmartin.coaching.constants.SecurityConstants;
+import com.johnmartin.coaching.constants.UIConstants;
 import com.johnmartin.coaching.constants.error.SystemErrorConstants;
 import com.johnmartin.coaching.constants.error.domain.UserErrorConstants;
 import com.johnmartin.coaching.dto.AuthUser;
 import com.johnmartin.coaching.dto.internal.SocialUserResponse;
 import com.johnmartin.coaching.dto.request.CreateClientUserRequest;
-import com.johnmartin.coaching.dto.response.UserResponse;
+import com.johnmartin.coaching.dto.response.ClientUserResponse;
 import com.johnmartin.coaching.dto.response.common.PagedResponse;
 import com.johnmartin.coaching.entity.ClientProfileEntity;
 import com.johnmartin.coaching.entity.CoachClientRelationshipEntity;
 import com.johnmartin.coaching.enums.CoachingStatus;
 import com.johnmartin.coaching.exceptions.BadRequestException;
 import com.johnmartin.coaching.exceptions.ConflictException;
+import com.johnmartin.coaching.mapper.UserMapper;
 import com.johnmartin.coaching.repository.ClientProfileRepository;
 import com.johnmartin.coaching.repository.CoachClientRelationshipRepository;
 import com.johnmartin.coaching.service.internal.client.SocialServiceClient;
@@ -102,26 +107,35 @@ public class UserService {
      *            - page
      * @return List of UserResponse
      */
-    public PagedResponse<UserResponse> getUsers(int page) {
+    public PagedResponse<ClientUserResponse> getUsers(int page) {
         LoggerUtility.d(clazz, String.format("Execute method: [getUsers], page: [%d]", page));
 
         // Get authenticated coach
-        // AuthUser authUser = authService.getAuthUser();
-        //
-        // // Build pagination
-        // PageRequest pageRequest = PageRequest.of(page, UIConstants.MINIMUM_USERS);
-        // UUID coachId = UUID.fromString(authUser.id());
-        // Page<ClientProfileEntity> usersPage = clientProfileRepository.findByCoachId(coachId, pageRequest);
-        // List<UserResponse> users = usersPage.getContent().stream().map(UserMapper::toResponse).toList();
-        // LoggerUtility.d(clazz, String.format("users size: [%d]", users.size()));
+        AuthUser authUser = authService.getAuthUser();
 
-        // return new PagedResponse<>(users,
-        // usersPage.getNumber(),
-        // usersPage.getSize(),
-        // usersPage.getTotalElements(),
-        // usersPage.getTotalPages(),
-        // usersPage.hasNext());
+        // Build pagination
+        PageRequest pageRequest = PageRequest.of(page, UIConstants.MINIMUM_USERS);
+        UUID coachId = UUID.fromString(authUser.id());
+        Page<ClientProfileEntity> usersPage = clientProfileRepository.findByCoachId(coachId, pageRequest);
+        List<ClientUserResponse> users = usersPage.getContent().stream().map(UserMapper::toResponse).toList();
+        LoggerUtility.d(clazz, String.format("users size: [%d]", users.size()));
 
-        return null;
+        return new PagedResponse<>(users,
+                                   usersPage.getNumber(),
+                                   usersPage.getSize(),
+                                   usersPage.getTotalElements(),
+                                   usersPage.getTotalPages(),
+                                   usersPage.hasNext());
+    }
+
+    @Transactional
+    public void deleteClientProfile(UUID userId) {
+        LoggerUtility.d(clazz, String.format("Execute method: [deleteClientProfile] userId: [%s]", userId.toString()));
+
+        // Delete first the relationship
+        coachClientRelationshipRepository.deleteByClientId(userId);
+
+        // Delete client profile
+        clientProfileRepository.deleteByUserId(userId);
     }
 }

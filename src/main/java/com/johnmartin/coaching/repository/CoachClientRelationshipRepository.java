@@ -11,4 +11,6 @@ import com.johnmartin.coaching.entity.CoachClientRelationshipEntity;
 public interface CoachClientRelationshipRepository extends JpaRepository<CoachClientRelationshipEntity, UUID> {
 
     boolean existsByCoachIdAndClientId(UUID coachId, UUID clientId);
+
+    void deleteByClientId(UUID clientId);
 }

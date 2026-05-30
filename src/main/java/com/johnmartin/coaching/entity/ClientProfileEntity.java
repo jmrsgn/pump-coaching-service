@@ -1,8 +1,10 @@
 package com.johnmartin.coaching.entity;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.johnmartin.coaching.constants.entities.CoachProfileConstants;
 import com.johnmartin.coaching.enums.ActivityLevel;
@@ -26,6 +28,7 @@ public class ClientProfileEntity {
     @JoinColumn(nullable = false, unique = true, name = CoachProfileConstants.COLUMN_USER_ID)
     private UUID userId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = CoachProfileConstants.COLUMN_GENDER)
     private Gender gender;
 
@@ -41,15 +44,19 @@ public class ClientProfileEntity {
     @Column(nullable = false, name = CoachProfileConstants.COLUMN_GOAL_WEIGHT)
     private Double goalWeight;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = CoachProfileConstants.COLUMN_ACTIVITY_LEVEL)
     private ActivityLevel activityLevel;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = CoachProfileConstants.COLUMN_FITNESS_GOAL)
     private FitnessGoal fitnessGoal;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_CREATED_AT)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(name = CoachProfileConstants.COLUMN_CREATED_AT, updatable = false)
+    private Instant createdAt;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_UPDATED_AT)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(name = CoachProfileConstants.COLUMN_UPDATED_AT)
+    private Instant updatedAt;
 }

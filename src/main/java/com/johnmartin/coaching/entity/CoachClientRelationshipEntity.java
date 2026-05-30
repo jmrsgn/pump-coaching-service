@@ -1,7 +1,9 @@
 package com.johnmartin.coaching.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.johnmartin.coaching.constants.entities.CoachProfileConstants;
 
@@ -28,9 +30,11 @@ public class CoachClientRelationshipEntity {
     @Column(nullable = false, name = CoachProfileConstants.CoachClientRelationship.COLUMN_STATUS)
     private String status;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_CREATED_AT)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(name = CoachProfileConstants.COLUMN_CREATED_AT, updatable = false)
+    private Instant createdAt;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_UPDATED_AT)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(name = CoachProfileConstants.COLUMN_UPDATED_AT)
+    private Instant updatedAt;
 }
