@@ -1,11 +1,13 @@
 package com.johnmartin.coaching.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -163,5 +165,43 @@ public class UserService {
 
         // Delete client profile
         clientProfileRepository.deleteByUserId(userId);
+    }
+
+    /**
+     * Search users based on query
+     * 
+     * @param query
+     *            - query
+     * @return List<SocialUserSummaryResponse>
+     */
+    public List<SocialUserSummaryResponse> searchUsers(String query) {
+        LoggerUtility.d(clazz, String.format("Execute method: [searchUsers] query: [%s]", query));
+
+        if (StringUtils.isBlank(query)) {
+            return Collections.emptyList();
+        }
+
+        AuthUser authUser = authService.getAuthUser();
+
+        String requestId = (String) MDC.get(SecurityConstants.HttpHeaders.REQUEST_ID);
+
+        List<SocialUserSummaryResponse> users = socialServiceClient.searchUsers(query.trim(), requestId);
+        LoggerUtility.logItemSize(clazz, "users", users);
+
+        UUID coachId = UUID.fromString(authUser.id());
+
+        List<UUID> enrolledIds = coachClientRelationshipRepository.findByCoachId(coachId)
+                                                                  .stream()
+                                                                  .map(CoachClientRelationshipEntity::getClientId)
+                                                                  .toList();
+        LoggerUtility.logItemSize(clazz, "enrolledIds", enrolledIds);
+
+        // Filter users that are not currently enrolled from coach
+        List<SocialUserSummaryResponse> filteredUsers = users.stream()
+                                                             .filter(user -> !enrolledIds.contains(UUID.fromString(user.id())))
+                                                             .toList();
+
+        LoggerUtility.logItemSize(clazz, "filteredUsers", filteredUsers);
+        return filteredUsers;
     }
 }

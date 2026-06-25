@@ -1,5 +1,6 @@
 package com.johnmartin.coaching.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,6 @@ public interface CoachClientRelationshipRepository extends JpaRepository<CoachCl
     boolean existsByCoachIdAndClientId(UUID coachId, UUID clientId);
 
     void deleteByClientId(UUID clientId);
+
+    List<CoachClientRelationshipEntity> findByCoachId(UUID coachId);
 }

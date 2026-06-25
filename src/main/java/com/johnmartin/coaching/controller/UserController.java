@@ -1,5 +1,7 @@
 package com.johnmartin.coaching.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +10,7 @@ import com.johnmartin.coaching.dto.request.CreateClientUserRequest;
 import com.johnmartin.coaching.dto.response.ClientUserResponse;
 import com.johnmartin.coaching.dto.response.common.PagedResponse;
 import com.johnmartin.coaching.dto.response.common.Result;
+import com.johnmartin.coaching.dto.response.internal.SocialUserSummaryResponse;
 import com.johnmartin.coaching.service.UserService;
 
 import jakarta.validation.constraints.PositiveOrZero;
@@ -32,5 +35,11 @@ public class UserController {
     public ResponseEntity<Result<Void>> createUser(@RequestBody CreateClientUserRequest request) {
         userService.createUser(request);
         return ResponseEntity.ok(Result.success(null));
+    }
+
+    @GetMapping(ApiConstants.Path.SEARCH_USER)
+    public ResponseEntity<Result<List<SocialUserSummaryResponse>>> searchUsers(@RequestParam(ApiConstants.Params.QUERY) String query) {
+        List<SocialUserSummaryResponse> users = userService.searchUsers(query);
+        return ResponseEntity.ok(Result.success(users));
     }
 }

@@ -21,6 +21,7 @@ public final class ApiConstants {
         // User
         public static final String API_USERS = API_BASE_V1 + "/users";
         public static final String CREATE_USER = "/create";
+        public static final String SEARCH_USER = "/search";
     }
 
     public static final class Params {
@@ -28,7 +29,7 @@ public final class ApiConstants {
         private Params() {
         }
 
-        // add params here
+        public static final String QUERY = "query";
     }
 
     public static final class HttpError {

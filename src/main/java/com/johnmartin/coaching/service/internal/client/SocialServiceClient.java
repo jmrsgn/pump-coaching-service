@@ -1,5 +1,6 @@
 package com.johnmartin.coaching.service.internal.client;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,9 +20,12 @@ import com.johnmartin.coaching.dto.response.common.Result;
 import com.johnmartin.coaching.dto.response.internal.SocialUserResponse;
 import com.johnmartin.coaching.dto.response.internal.SocialUserSummaryResponse;
 import com.johnmartin.coaching.exceptions.NotFoundException;
+import com.johnmartin.coaching.utilities.LoggerUtility;
 
 @Service
 public class SocialServiceClient {
+
+    private static final Class<SocialServiceClient> clazz = SocialServiceClient.class;
 
     private final RestClient socialServiceRestClient;
 
@@ -33,7 +37,7 @@ public class SocialServiceClient {
     public SocialUserResponse getSocialUserById(String userId, String requestId) {
         try {
             Result<SocialUserResponse> result = socialServiceRestClient.get()
-                                                                       .uri(ExternalServiceConstants.PumpSocialService.API_USER_INTERNAL
+                                                                       .uri(ExternalServiceConstants.PumpSocialService.API_USERS
                                                                             + "/" + userId)
                                                                        .header(SecurityConstants.HttpHeaders.REQUEST_ID,
                                                                                requestId)
@@ -57,7 +61,7 @@ public class SocialServiceClient {
     public List<SocialUserSummaryResponse> getUsersByIds(List<String> userIds, String requestId) {
         try {
             Result<List<SocialUserSummaryResponse>> result = socialServiceRestClient.post()
-                                                                                    .uri(ExternalServiceConstants.PumpSocialService.API_USER_INTERNAL)
+                                                                                    .uri(ExternalServiceConstants.PumpSocialService.API_USERS)
                                                                                     .header(SecurityConstants.HttpHeaders.REQUEST_ID,
                                                                                             requestId)
                                                                                     .body(new GetSocialUsersRequest(userIds))
@@ -72,6 +76,31 @@ public class SocialServiceClient {
             return result.getData().get();
         } catch (HttpClientErrorException ex) {
             throw new NotFoundException(ExternalServiceErrorConstants.SOCIAL_USERS_NOT_FOUND);
+        } catch (Exception ex) {
+            throw new RuntimeException(ExternalServiceErrorConstants.FAILED_TO_GET_SOCIAL_USERS);
+        }
+    }
+
+    @Retryable(retryFor = Exception.class, maxAttempts = ApiConstants.RETRIES_COUNT, backoff = @Backoff(delay = UIConstants.DELAY_2000))
+    public List<SocialUserSummaryResponse> searchUsers(String query, String requestId) {
+        try {
+            Result<List<SocialUserSummaryResponse>> result = socialServiceRestClient.get()
+                                                                                    .uri(uriBuilder -> uriBuilder.path(ExternalServiceConstants.PumpSocialService.API_SEARCH_USER)
+                                                                                                                 .queryParam(ApiConstants.Params.QUERY,
+                                                                                                                             query)
+                                                                                                                 .build())
+                                                                                    .header(SecurityConstants.HttpHeaders.REQUEST_ID,
+                                                                                            requestId)
+                                                                                    .retrieve()
+                                                                                    .body(new ParameterizedTypeReference<>() {
+                                                                                    });
+
+            if (result == null || result.getData().isEmpty()) {
+                LoggerUtility.d(clazz, "Result is empty, will return empty list");
+                return Collections.emptyList();
+            }
+
+            return result.getData().get();
         } catch (Exception ex) {
             throw new RuntimeException(ExternalServiceErrorConstants.FAILED_TO_GET_SOCIAL_USERS);
         }

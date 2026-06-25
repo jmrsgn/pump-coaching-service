@@ -24,6 +24,7 @@ public final class ExternalServiceConstants {
         private PumpSocialService() {
         }
 
-        public static final String API_USER_INTERNAL = API_BASE_V1_INTERNAL + "/social/users";
+        public static final String API_USERS = API_BASE_V1_INTERNAL + "/social/users";
+        public static final String API_SEARCH_USER = API_USERS + "/search";
     }
 }
