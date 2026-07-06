@@ -185,7 +185,7 @@ public class UserService {
 
         String requestId = (String) MDC.get(SecurityConstants.HttpHeaders.REQUEST_ID);
 
-        List<SocialUserSummaryResponse> users = socialServiceClient.searchUsers(query.trim(), requestId);
+        List<SocialUserSummaryResponse> users = socialServiceClient.searchUsers(authUser.id(), query.trim(), requestId);
         LoggerUtility.logItemSize(clazz, "users", users);
 
         UUID coachId = UUID.fromString(authUser.id());

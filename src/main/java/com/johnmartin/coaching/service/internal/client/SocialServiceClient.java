@@ -3,7 +3,9 @@ package com.johnmartin.coaching.service.internal.client;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,12 @@ public class SocialServiceClient {
 
     private final RestClient socialServiceRestClient;
 
-    public SocialServiceClient(RestClient socialServiceRestClient) {
+    private final String internalServiceToken;
+
+    public SocialServiceClient(RestClient socialServiceRestClient,
+                               @Value("${pump.security.internal-service-token}") String internalServiceToken) {
         this.socialServiceRestClient = socialServiceRestClient;
+        this.internalServiceToken = internalServiceToken;
     }
 
     @Retryable(retryFor = Exception.class, maxAttempts = ApiConstants.RETRIES_COUNT, backoff = @Backoff(delay = UIConstants.DELAY_2000))
@@ -82,13 +88,18 @@ public class SocialServiceClient {
     }
 
     @Retryable(retryFor = Exception.class, maxAttempts = ApiConstants.RETRIES_COUNT, backoff = @Backoff(delay = UIConstants.DELAY_2000))
-    public List<SocialUserSummaryResponse> searchUsers(String query, String requestId) {
+    public List<SocialUserSummaryResponse> searchUsers(String currentUserId, String query, String requestId) {
         try {
             Result<List<SocialUserSummaryResponse>> result = socialServiceRestClient.get()
                                                                                     .uri(uriBuilder -> uriBuilder.path(ExternalServiceConstants.PumpSocialService.API_SEARCH_USER)
                                                                                                                  .queryParam(ApiConstants.Params.QUERY,
                                                                                                                              query)
                                                                                                                  .build())
+                                                                                    .header(HttpHeaders.AUTHORIZATION,
+                                                                                            SecurityConstants.HttpHeaders.BEARER
+                                                                                                                       + internalServiceToken)
+                                                                                    .header(SecurityConstants.HttpHeaders.USER_ID,
+                                                                                            currentUserId)
                                                                                     .header(SecurityConstants.HttpHeaders.REQUEST_ID,
                                                                                             requestId)
                                                                                     .retrieve()

@@ -15,3 +15,7 @@ management:
     health:
       probes:
         enabled: true
+
+pump:
+  security:
+    internal-service-token: ${PUMP_INTERNAL_SERVICE_TOKEN}
