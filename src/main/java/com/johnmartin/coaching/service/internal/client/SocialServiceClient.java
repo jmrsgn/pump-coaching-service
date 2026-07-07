@@ -64,10 +64,15 @@ public class SocialServiceClient {
     }
 
     @Retryable(retryFor = Exception.class, maxAttempts = ApiConstants.RETRIES_COUNT, backoff = @Backoff(delay = UIConstants.DELAY_2000))
-    public List<SocialUserSummaryResponse> getUsersByIds(List<String> userIds, String requestId) {
+    public List<SocialUserSummaryResponse> getUsersByIds(String currentUserId, List<String> userIds, String requestId) {
         try {
             Result<List<SocialUserSummaryResponse>> result = socialServiceRestClient.post()
                                                                                     .uri(ExternalServiceConstants.PumpSocialService.API_USERS)
+                                                                                    .header(HttpHeaders.AUTHORIZATION,
+                                                                                            SecurityConstants.HttpHeaders.BEARER
+                                                                                                                       + internalServiceToken)
+                                                                                    .header(SecurityConstants.HttpHeaders.USER_ID,
+                                                                                            currentUserId)
                                                                                     .header(SecurityConstants.HttpHeaders.REQUEST_ID,
                                                                                             requestId)
                                                                                     .body(new GetSocialUsersRequest(userIds))

@@ -1,5 +1,6 @@
 package com.johnmartin.coaching.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,8 +31,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthContextFilter authContextFilter(AuthServiceClient authServiceClient, ObjectMapper objectMapper) {
-        return new AuthContextFilter(authServiceClient, objectMapper);
+    public AuthContextFilter authContextFilter(AuthServiceClient authServiceClient,
+                                               ObjectMapper objectMapper,
+                                               @Value("${pump.security.internal-service-token}") String internalServiceToken) {
+        return new AuthContextFilter(authServiceClient, objectMapper, internalServiceToken);
     }
 
     /**

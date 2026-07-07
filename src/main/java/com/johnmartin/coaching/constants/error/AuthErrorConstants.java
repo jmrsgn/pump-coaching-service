@@ -9,4 +9,5 @@ public final class AuthErrorConstants {
     public static final String USER_IS_NOT_AUTHENTICATED_OR_INVALID_TOKEN = "User is not authenticated or invalid token";
     public static final String MISSING_AUTHENTICATION_HEADER = "Missing Authentication Header";
     public static final String USER_IS_NOT_AUTHENTICATED = "User is not authenticated";
+    public static final String MISSING_USER_ID_HEADER = "Missing User ID Header";
 }

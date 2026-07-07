@@ -132,7 +132,9 @@ public class UserService {
         List<String> userIds = profiles.stream().map(profile -> profile.getUserId().toString()).toList();
 
         // Batch fetch social users
-        List<SocialUserSummaryResponse> socialUsers = socialServiceClient.getUsersByIds(userIds, requestId);
+        List<SocialUserSummaryResponse> socialUsers = socialServiceClient.getUsersByIds(authUser.id(),
+                                                                                        userIds,
+                                                                                        requestId);
         LoggerUtility.logItemSize(clazz, "socialUsers", socialUsers);
 
         // Fast lookup map
