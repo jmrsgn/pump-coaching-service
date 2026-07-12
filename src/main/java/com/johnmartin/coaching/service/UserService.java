@@ -72,7 +72,9 @@ public class UserService {
         LoggerUtility.d(clazz, String.format("requestId: [%s]", requestId));
 
         // Validate if target user exists
-        SocialUserResponse socialUser = socialServiceClient.getSocialUserById(request.userId(), requestId);
+        SocialUserResponse socialUser = socialServiceClient.getSocialUserById(authUser.id(),
+                                                                              request.userId(),
+                                                                              requestId);
         UUID clientUserId = UUID.fromString(socialUser.id());
 
         // Prevent duplicate client profile
