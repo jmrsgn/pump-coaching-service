@@ -1,7 +1,6 @@
 package com.johnmartin.coaching.entity;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,8 +31,8 @@ public class ClientProfileEntity {
     @Column(nullable = false, name = CoachProfileConstants.COLUMN_GENDER)
     private Gender gender;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_BIRTH_DATE)
-    private LocalDate birthDate;
+    @Column(nullable = false, name = CoachProfileConstants.COLUMN_AGE)
+    private Integer age;
 
     @Column(nullable = false, name = CoachProfileConstants.COLUMN_HEIGHT_CM)
     private Double heightCm;

@@ -1,10 +1,10 @@
 package com.johnmartin.coaching.dto.response;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 import com.johnmartin.coaching.enums.ActivityLevel;
+import com.johnmartin.coaching.enums.CoachingStatus;
 import com.johnmartin.coaching.enums.FitnessGoal;
 import com.johnmartin.coaching.enums.Gender;
 
@@ -14,7 +14,7 @@ public record ClientUserResponse(UUID id,
                                  String profileImageUrl,
 
                                  Gender gender,
-                                 LocalDate birthDate,
+                                 Integer age,
 
                                  Double heightCm,
                                  Double currentWeight,
@@ -24,6 +24,8 @@ public record ClientUserResponse(UUID id,
                                  FitnessGoal fitnessGoal,
 
                                  Instant createdAt,
-                                 Instant updatedAt) {
+                                 Instant updatedAt,
+
+                                 CoachingStatus status) {
 
 }

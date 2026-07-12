@@ -92,7 +92,7 @@ public class UserService {
         ClientProfileEntity profile = new ClientProfileEntity();
         profile.setUserId(clientUserId);
         profile.setGender(request.gender());
-        profile.setBirthDate(request.birthDate());
+        profile.setAge(request.age());
         profile.setHeightCm(request.heightCm());
         profile.setCurrentWeight(request.currentWeight());
         profile.setGoalWeight(request.goalWeight());
@@ -144,10 +144,21 @@ public class UserService {
                                                                            .collect(Collectors.toMap(SocialUserSummaryResponse::id,
                                                                                                      Function.identity()));
 
+        // Get coach-client relationships
+        List<CoachClientRelationshipEntity> relationships = coachClientRelationshipRepository.findByCoachIdAndClientIdIn(coachId,
+                                                                                                                         userIds);
+
+        Map<UUID, CoachClientRelationshipEntity> relationshipMap = relationships.stream()
+                                                                                .collect(Collectors.toMap(CoachClientRelationshipEntity::getClientId,
+                                                                                                          Function.identity()));
+
         // Merge profile + social user
         List<ClientUserResponse> users = profiles.stream().map(profile -> {
             SocialUserSummaryResponse socialUser = socialUsersMap.get(profile.getUserId().toString());
-            return UserMapper.toResponse(profile, socialUser);
+            CoachClientRelationshipEntity relationship = relationshipMap.get(profile.getUserId());
+            return UserMapper.toClientUserResponse(profile,
+                                                   socialUser,
+                                                   CoachingStatus.fromCode(relationship.getStatus()));
         }).toList();
 
         LoggerUtility.logItemSize(clazz, "users", users);

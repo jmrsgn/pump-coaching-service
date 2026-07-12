@@ -7,7 +7,7 @@ public final class ValidationErrorConstants {
 
     public static final String USER_ID_IS_REQUIRED = "User ID is required";
     public static final String GENDER_IS_REQUIRED = "Gender is required";
-    public static final String BIRTH_DATE_IS_REQUIRED = "Birth date is required";
+    public static final String AGE_IS_REQUIRED = "Age is required";
     public static final String HEIGHT_IS_REQUIRED = "Height is required";
     public static final String CURRENT_WEIGHT_IS_REQUIRED = "Current weight is required";
     public static final String GOAL_WEIGHT_IS_REQUIRED = "Goal weight is required";

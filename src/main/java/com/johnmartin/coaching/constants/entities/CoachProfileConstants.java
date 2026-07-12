@@ -8,7 +8,7 @@ public final class CoachProfileConstants {
     public static final String TABLE_NAME = "client_profiles";
     public static final String COLUMN_USER_ID = "user_id";
     public static final String COLUMN_GENDER = "gender";
-    public static final String COLUMN_BIRTH_DATE = "birth_date";
+    public static final String COLUMN_AGE = "age";
     public static final String COLUMN_HEIGHT_CM = "height_cm";
     public static final String COLUMN_CURRENT_WEIGHT = "current_weight";
     public static final String COLUMN_GOAL_WEIGHT = "goal_weight";

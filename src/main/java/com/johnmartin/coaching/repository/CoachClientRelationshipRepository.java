@@ -16,4 +16,6 @@ public interface CoachClientRelationshipRepository extends JpaRepository<CoachCl
     void deleteByClientId(UUID clientId);
 
     List<CoachClientRelationshipEntity> findByCoachId(UUID coachId);
+
+    List<CoachClientRelationshipEntity> findByCoachIdAndClientIdIn(UUID coachId, List<String> userIds);
 }
