@@ -1,10 +1,17 @@
 server:
   port: 8082
 
-auth:
-  service:
-    url: http://localhost:8081
+# Services
+external-services:
+  auth:
+    service:
+      url: http://localhost:8081
 
+  social:
+    service:
+      url: http://localhost:8080
+
+# Postgres
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/pump_coaching
@@ -19,6 +26,7 @@ spring:
       ddl-auto: update
     show-sql: false
 
+# Logging
 logging:
   level:
     com.johnmartin.coaching: TRACE

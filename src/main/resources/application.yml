@@ -2,6 +2,7 @@ spring:
   application:
     name: pump-coaching-service
 
+# Logging
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{requestId}] %-5level [%thread] %logger{36} - %msg%n"
@@ -16,6 +17,7 @@ management:
       probes:
         enabled: true
 
+# Internal token
 pump:
   security:
     internal-service-token: ${PUMP_INTERNAL_SERVICE_TOKEN}

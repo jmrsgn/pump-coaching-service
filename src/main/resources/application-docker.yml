@@ -1,10 +1,22 @@
 server:
   port: 8080
 
-auth:
-  service:
-    url: http://pump-auth-service:8080
+# Services
+external-services:
+  auth:
+    service:
+      url: http://pump-auth-service:8080
 
+  social:
+    service:
+      url: http://pump-social-service:8080
+
+# Logging
 logging:
   level:
     com.johnmartin.coaching: INFO
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
