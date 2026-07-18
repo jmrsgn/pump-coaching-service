@@ -4,12 +4,10 @@ server:
 # Services
 external-services:
   auth:
-    service:
-      url: http://localhost:8081
+    url: http://localhost:8081
 
   social:
-    service:
-      url: http://localhost:8080
+    url: http://localhost:8080
 
 # Postgres
 spring:
