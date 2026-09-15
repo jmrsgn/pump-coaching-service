@@ -7,5 +7,6 @@ public final class UserErrorConstants {
 
     public static final String CLIENT_PROFILE_ALREADY_EXISTS = "Client profile already exists";
     public static final String CLIENT_IS_ALREADY_ENROLLED = "Client is already enrolled";
+    public static final String CLIENT_NOT_FOUND = "Client not found";
 
 }

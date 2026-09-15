@@ -1,5 +1,6 @@
 package com.johnmartin.coaching.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -25,4 +26,14 @@ public interface ClientProfileRepository extends JpaRepository<ClientProfileEnti
             WHERE ccr.coachId = :coachId
             """)
     Page<ClientProfileEntity> findByCoachId(UUID coachId, Pageable pageable);
+
+    @Query("""
+            SELECT cp
+            FROM ClientProfileEntity cp
+            JOIN CoachClientRelationshipEntity ccr
+                ON cp.userId = ccr.clientId
+            WHERE ccr.coachId = :coachId
+              AND cp.userId = :userId
+            """)
+    Optional<ClientProfileEntity> findByCoachIdAndUserId(UUID coachId, UUID userId);
 }

@@ -1,12 +1,13 @@
 package com.johnmartin.coaching.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.johnmartin.coaching.entity.TrainingBlockEntity;
+import com.johnmartin.coaching.enums.TrainingBlockStatus;
+import com.johnmartin.coaching.exceptions.NotFoundException;
+import com.johnmartin.coaching.repository.TrainingBlockRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.MDC;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public class UserService {
     private static final Class<UserService> clazz = UserService.class;
     private final ClientProfileRepository clientProfileRepository;
     private final CoachClientRelationshipRepository coachClientRelationshipRepository;
+    private final TrainingBlockRepository trainingBlockRepository;
 
     private final AuthService authService;
 
@@ -49,10 +51,12 @@ public class UserService {
 
     public UserService(ClientProfileRepository clientProfileRepository,
                        CoachClientRelationshipRepository coachClientRelationshipRepository,
+                       TrainingBlockRepository trainingBlockRepository,
                        AuthService authService,
                        SocialServiceClient socialServiceClient) {
         this.clientProfileRepository = clientProfileRepository;
         this.coachClientRelationshipRepository = coachClientRelationshipRepository;
+        this.trainingBlockRepository = trainingBlockRepository;
         this.authService = authService;
         this.socialServiceClient = socialServiceClient;
     }
@@ -108,57 +112,82 @@ public class UserService {
         coachClientRelationshipRepository.save(relationship);
     }
 
-    /**
-     * Get clients under a coach
-     *
-     * @param page
-     *            - page
-     * @return List of UserResponse
-     */
     public PagedResponse<ClientUserResponse> getUsers(int page) {
         LoggerUtility.d(clazz, String.format("Execute method: [getUsers], page: [%d]", page));
 
-        // Get authenticated coach
+        // Get authenticated coach.
         AuthUser authUser = authService.getAuthUser();
+
+        UUID coachId = UUID.fromString(authUser.id());
 
         String requestId = MDC.get(SecurityConstants.HttpHeaders.REQUEST_ID).toString();
 
-        // Build pagination
-        UUID coachId = UUID.fromString(authUser.id());
+        // Get paginated client profiles under authenticated coach.
         PageRequest pageRequest = PageRequest.of(page, UIConstants.MINIMUM_USERS);
+
         Page<ClientProfileEntity> profilesPage = clientProfileRepository.findByCoachId(coachId, pageRequest);
+
         List<ClientProfileEntity> profiles = profilesPage.getContent();
+
         LoggerUtility.logItemSize(clazz, "profiles", profiles);
 
-        // Extract userIds
-        List<String> userIds = profiles.stream().map(profile -> profile.getUserId().toString()).toList();
+        // Nothing else needs to be fetched when the page is empty.
+        if (profiles.isEmpty()) {
+            return new PagedResponse<>(List.of(),
+                                       profilesPage.getNumber(),
+                                       profilesPage.getSize(),
+                                       profilesPage.getTotalElements(),
+                                       profilesPage.getTotalPages(),
+                                       profilesPage.hasNext());
+        }
 
-        // Batch fetch social users
+        // Extract client IDs once and reuse them.
+        List<UUID> clientIds = profiles.stream().map(ClientProfileEntity::getUserId).toList();
+
+        List<String> clientIdStrings = clientIds.stream().map(UUID::toString).toList();
+
+        // Batch fetch social users.
         List<SocialUserSummaryResponse> socialUsers = socialServiceClient.getUsersByIds(authUser.id(),
-                                                                                        userIds,
+                                                                                        clientIdStrings,
                                                                                         requestId);
+
         LoggerUtility.logItemSize(clazz, "socialUsers", socialUsers);
 
-        // Fast lookup map
         Map<String, SocialUserSummaryResponse> socialUsersMap = socialUsers.stream()
                                                                            .collect(Collectors.toMap(SocialUserSummaryResponse::id,
                                                                                                      Function.identity()));
 
-        // Get coach-client relationships
+        // Batch fetch coach-client relationships.
         List<CoachClientRelationshipEntity> relationships = coachClientRelationshipRepository.findByCoachIdAndClientIdIn(coachId,
-                                                                                                                         userIds);
+                                                                                                                         clientIdStrings);
 
         Map<UUID, CoachClientRelationshipEntity> relationshipMap = relationships.stream()
                                                                                 .collect(Collectors.toMap(CoachClientRelationshipEntity::getClientId,
                                                                                                           Function.identity()));
 
-        // Merge profile + social user
+        // Batch fetch active training blocks.
+        List<TrainingBlockEntity> activeTrainingBlocks = trainingBlockRepository.findByCoachIdAndClientIdInAndStatus(coachId,
+                                                                                                                     clientIds,
+                                                                                                                     TrainingBlockStatus.ACTIVE);
+
+        Set<UUID> clientsWithActiveTrainingBlock = activeTrainingBlocks.stream()
+                                                                       .map(TrainingBlockEntity::getClientId)
+                                                                       .collect(Collectors.toSet());
+
+        // Merge profile + social + relationship + training block state.
         List<ClientUserResponse> users = profiles.stream().map(profile -> {
-            SocialUserSummaryResponse socialUser = socialUsersMap.get(profile.getUserId().toString());
-            CoachClientRelationshipEntity relationship = relationshipMap.get(profile.getUserId());
+            UUID clientId = profile.getUserId();
+
+            SocialUserSummaryResponse socialUser = socialUsersMap.get(clientId.toString());
+
+            CoachClientRelationshipEntity relationship = relationshipMap.get(clientId);
+
+            boolean hasActiveTrainingBlock = clientsWithActiveTrainingBlock.contains(clientId);
+
             return UserMapper.toClientUserResponse(profile,
                                                    socialUser,
-                                                   CoachingStatus.fromCode(relationship.getStatus()));
+                                                   CoachingStatus.fromCode(relationship.getStatus()),
+                                                   hasActiveTrainingBlock);
         }).toList();
 
         LoggerUtility.logItemSize(clazz, "users", users);

@@ -6,6 +6,7 @@ import com.johnmartin.coaching.dto.response.internal.AuthUserResponse;
 import com.johnmartin.coaching.dto.response.internal.SocialUserSummaryResponse;
 import com.johnmartin.coaching.entity.ClientProfileEntity;
 import com.johnmartin.coaching.enums.CoachingStatus;
+import com.johnmartin.coaching.enums.TrainingBlockStatus;
 
 public class UserMapper {
 
@@ -22,7 +23,8 @@ public class UserMapper {
 
     public static ClientUserResponse toClientUserResponse(ClientProfileEntity profile,
                                                           SocialUserSummaryResponse socialUser,
-                                                          CoachingStatus status) {
+                                                          CoachingStatus coachingStatus,
+                                                          boolean hasActiveTrainingBlock) {
         return new ClientUserResponse(profile.getUserId(),
                                       socialUser.firstName(),
                                       socialUser.lastName(),
@@ -36,6 +38,7 @@ public class UserMapper {
                                       profile.getFitnessGoal(),
                                       profile.getCreatedAt(),
                                       profile.getUpdatedAt(),
-                                      status);
+                                      coachingStatus,
+                                      hasActiveTrainingBlock);
     }
 }

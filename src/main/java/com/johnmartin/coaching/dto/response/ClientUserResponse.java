@@ -26,6 +26,8 @@ public record ClientUserResponse(UUID id,
                                  Instant createdAt,
                                  Instant updatedAt,
 
-                                 CoachingStatus status) {
+                                 CoachingStatus coachingStatus,
+
+                                 boolean hasActiveTrainingBlock) {
 
 }

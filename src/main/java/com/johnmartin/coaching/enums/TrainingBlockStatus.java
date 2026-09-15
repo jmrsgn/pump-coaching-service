@@ -5,15 +5,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.johnmartin.coaching.constants.domain.UserConstants;
 import com.johnmartin.coaching.constants.error.SystemErrorConstants;
 
-import lombok.Getter;
-
-@Getter
-public enum CoachingStatus {
+public enum TrainingBlockStatus {
     ACTIVE(UserConstants.ACTIVE), INACTIVE(UserConstants.INACTIVE);
 
     private final String value;
 
-    CoachingStatus(String value) {
+    TrainingBlockStatus(String value) {
         this.value = value;
     }
 
@@ -23,13 +20,13 @@ public enum CoachingStatus {
     }
 
     @JsonCreator
-    public static CoachingStatus fromCode(String value) {
-        for (CoachingStatus status : values()) {
+    public static TrainingBlockStatus fromCode(String value) {
+        for (TrainingBlockStatus status : values()) {
             if (status.value.equalsIgnoreCase(value)) {
                 return status;
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_COACHING_STATUS + ": " + value);
+        throw new IllegalArgumentException(SystemErrorConstants.INVALID_TRAINING_BLOCK_STATUS + ": " + value);
     }
 }

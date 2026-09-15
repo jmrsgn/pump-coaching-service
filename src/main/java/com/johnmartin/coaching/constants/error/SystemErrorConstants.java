@@ -12,4 +12,5 @@ public final class SystemErrorConstants {
     public static final String INVALID_FITNESS_GOAL = "Invalid fitness goal";
     public static final String INVALID_GENDER = "Invalid gender";
     public static final String INVALID_USER_ROLE = "Invalid user role";
+    public static final String INVALID_TRAINING_BLOCK_STATUS = "Invalid training block status";
 }
