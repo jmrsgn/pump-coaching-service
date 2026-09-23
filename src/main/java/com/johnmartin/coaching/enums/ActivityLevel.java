@@ -31,6 +31,6 @@ public enum ActivityLevel {
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_ACTIVITY_LEVEL + ": " + value);
+        throw new IllegalArgumentException("Invalid activity level: " + value);
     }
 }

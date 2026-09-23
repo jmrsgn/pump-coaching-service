@@ -1,11 +1,13 @@
 package com.johnmartin.coaching.exceptions;
 
-import org.apache.coyote.BadRequestException;
+import com.johnmartin.coaching.constants.api.ApiConstants;
+import com.johnmartin.coaching.constants.error.SystemErrorConstants;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.johnmartin.coaching.dto.response.common.ApiErrorResponse;
 import com.johnmartin.coaching.dto.response.common.Result;
@@ -43,16 +45,21 @@ public class GlobalExceptionHandler {
         return ApiResponseUtils.createConflictErrorResponse(ex.getMessage());
     }
 
-    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-    public ResponseEntity<Result<ApiErrorResponse>> handleForbiddenException(ConflictException ex) {
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Result<ApiErrorResponse>> handleForbiddenException(ForbiddenException ex) {
         LoggerUtility.e(clazz, ex.getMessage(), ex);
         return ApiResponseUtils.createForbiddenErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<Result<ApiErrorResponse>> handleMalformedRequest(Exception ex) {
+        return ApiResponseUtils.createBadRequestErrorResponse("Malformed request");
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Result<ApiErrorResponse>> handleException(Exception ex) {
         LoggerUtility.e(clazz, ex.getMessage(), ex);
-        return ApiResponseUtils.createInternalServerErrorResponse(ex.getMessage());
+        return ApiResponseUtils.createInternalServerErrorResponse(SystemErrorConstants.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -64,9 +71,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Result<ApiErrorResponse>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        LoggerUtility.e(clazz, ex.getMessage(), ex);
-        // Get the first error message will be thrown in Bean annotations for requests
-        String message = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+        var fieldError = ex.getBindingResult().getFieldErrors().get(0);
+        LoggerUtility.w(clazz, "Validation failed for field {}", fieldError.getField());
+        String message = fieldError.getDefaultMessage();
         return ApiResponseUtils.createBadRequestErrorResponse(message);
     }
 

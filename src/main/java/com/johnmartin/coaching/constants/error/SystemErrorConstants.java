@@ -6,11 +6,5 @@ public final class SystemErrorConstants {
     }
 
     public static final String INVALID_REQUEST = "Invalid request";
-
-    public static final String INVALID_COACHING_STATUS = "Invalid coaching status";
-    public static final String INVALID_ACTIVITY_LEVEL = "Invalid activity level";
-    public static final String INVALID_FITNESS_GOAL = "Invalid fitness goal";
-    public static final String INVALID_GENDER = "Invalid gender";
-    public static final String INVALID_USER_ROLE = "Invalid user role";
-    public static final String INVALID_TRAINING_BLOCK_STATUS = "Invalid training block status";
+    public static final String INTERNAL_SERVER_ERROR = "Internal server error";
 }

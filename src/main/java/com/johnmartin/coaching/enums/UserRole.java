@@ -27,6 +27,6 @@ public enum UserRole {
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_USER_ROLE + ": " + value);
+        throw new IllegalArgumentException("Invalid user role: " + value);
     }
 }

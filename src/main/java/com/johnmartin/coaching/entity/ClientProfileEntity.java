@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.johnmartin.coaching.constants.entities.CoachProfileConstants;
+import com.johnmartin.coaching.constants.entities.ClientProfileConstants;
 import com.johnmartin.coaching.enums.ActivityLevel;
 import com.johnmartin.coaching.enums.FitnessGoal;
 import com.johnmartin.coaching.enums.Gender;
@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = CoachProfileConstants.TABLE_NAME)
+@Table(name = ClientProfileConstants.TABLE_NAME)
 @Getter
 @Setter
 public class ClientProfileEntity {
@@ -24,38 +24,38 @@ public class ClientProfileEntity {
     @GeneratedValue
     private UUID id;
 
-    @JoinColumn(nullable = false, unique = true, name = CoachProfileConstants.COLUMN_USER_ID)
+    @JoinColumn(nullable = false, unique = true, name = ClientProfileConstants.COLUMN_USER_ID)
     private UUID userId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_GENDER)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_GENDER)
     private Gender gender;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_AGE)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_AGE)
     private Integer age;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_HEIGHT_CM)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_HEIGHT_CM)
     private Double heightCm;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_CURRENT_WEIGHT)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_CURRENT_WEIGHT)
     private Double currentWeight;
 
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_GOAL_WEIGHT)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_GOAL_WEIGHT)
     private Double goalWeight;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_ACTIVITY_LEVEL)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_ACTIVITY_LEVEL)
     private ActivityLevel activityLevel;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = CoachProfileConstants.COLUMN_FITNESS_GOAL)
+    @Column(nullable = false, name = ClientProfileConstants.COLUMN_FITNESS_GOAL)
     private FitnessGoal fitnessGoal;
 
     @CreationTimestamp
-    @Column(name = CoachProfileConstants.COLUMN_CREATED_AT, updatable = false)
+    @Column(name = ClientProfileConstants.COLUMN_CREATED_AT, updatable = false)
     private Instant createdAt;
 
     @CreationTimestamp
-    @Column(name = CoachProfileConstants.COLUMN_UPDATED_AT)
+    @Column(name = ClientProfileConstants.COLUMN_UPDATED_AT)
     private Instant updatedAt;
 }

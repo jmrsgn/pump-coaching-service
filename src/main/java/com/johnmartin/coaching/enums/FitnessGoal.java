@@ -31,6 +31,6 @@ public enum FitnessGoal {
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_FITNESS_GOAL + ": " + value);
+        throw new IllegalArgumentException("Invalid fitness goal: "  + value);
     }
 }

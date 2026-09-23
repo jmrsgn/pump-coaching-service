@@ -27,6 +27,6 @@ public enum TrainingBlockStatus {
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_TRAINING_BLOCK_STATUS + ": " + value);
+        throw new IllegalArgumentException("Invalid training block status: " + value);
     }
 }

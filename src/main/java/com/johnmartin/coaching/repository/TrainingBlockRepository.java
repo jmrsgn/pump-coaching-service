@@ -12,6 +12,8 @@ import com.johnmartin.coaching.enums.TrainingBlockStatus;
 @Repository
 public interface TrainingBlockRepository extends JpaRepository<TrainingBlockEntity, UUID> {
 
+    boolean existsByCoachIdAndClientIdAndStatus(UUID coachId, UUID clientId, TrainingBlockStatus status);
+
     List<TrainingBlockEntity> findByCoachIdAndClientIdInAndStatus(UUID coachId,
                                                                   List<UUID> clientIds,
                                                                   TrainingBlockStatus status);

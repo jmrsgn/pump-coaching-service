@@ -30,6 +30,6 @@ public enum CoachingStatus {
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_COACHING_STATUS + ": " + value);
+        throw new IllegalArgumentException("Invalid coaching status: " + value);
     }
 }

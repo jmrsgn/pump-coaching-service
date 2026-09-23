@@ -1,0 +1,164 @@
+package com.johnmartin.coaching.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.johnmartin.coaching.dto.AuthUser;
+import com.johnmartin.coaching.dto.request.CreateTrainingBlockRequest;
+import com.johnmartin.coaching.entity.CoachClientRelationshipEntity;
+import com.johnmartin.coaching.entity.TrainingBlockEntity;
+import com.johnmartin.coaching.enums.TrainingBlockStatus;
+import com.johnmartin.coaching.exceptions.ConflictException;
+import com.johnmartin.coaching.exceptions.ForbiddenException;
+import com.johnmartin.coaching.exceptions.NotFoundException;
+import com.johnmartin.coaching.repository.ClientProfileRepository;
+import com.johnmartin.coaching.repository.CoachClientRelationshipRepository;
+import com.johnmartin.coaching.repository.TrainingBlockRepository;
+import com.johnmartin.coaching.security.AuthContext;
+
+@ExtendWith(MockitoExtension.class)
+class TrainingBlockServiceTest {
+
+    private static final UUID COACH_ID = UUID.randomUUID();
+    private static final UUID CLIENT_ID = UUID.randomUUID();
+    private static final CreateTrainingBlockRequest REQUEST = new CreateTrainingBlockRequest("Sample",
+                                                                                             8,
+                                                                                             5,
+                                                                                             " Upper/Lower ",
+                                                                                             2400,
+                                                                                             160,
+                                                                                             220,
+                                                                                             65,
+                                                                                             8000,
+                                                                                             " Travel notes ");
+
+    @Mock
+    AuthService authService;
+    @Mock
+    CoachClientRelationshipRepository relationshipRepository;
+    @Mock
+    ClientProfileRepository clientProfileRepository;
+    @Mock
+    TrainingBlockRepository trainingBlockRepository;
+    @InjectMocks
+    TrainingBlockService service;
+
+    @BeforeEach
+    void setUp() {
+        when(authService.getAuthUser()).thenReturn(new AuthUser(COACH_ID.toString(), null, null, null, null));
+        AuthContext.set(new AuthUser(COACH_ID.toString(), null, null, null, null), false);
+    }
+
+    @AfterEach
+    void tearDown() {
+        AuthContext.clear();
+    }
+
+    @Test
+    void createsActiveBlockForActiveRelationship() {
+        relationship("active");
+        when(clientProfileRepository.existsByUserId(CLIENT_ID)).thenReturn(true);
+        when(trainingBlockRepository.saveAndFlush(any())).thenAnswer(invocation -> {
+            TrainingBlockEntity block = invocation.getArgument(0);
+            block.setCreatedAt(Instant.parse("2026-09-23T00:00:00Z"));
+            return block;
+        });
+
+        var response = service.createTrainingBlock(CLIENT_ID, REQUEST);
+
+        ArgumentCaptor<TrainingBlockEntity> saved = ArgumentCaptor.forClass(TrainingBlockEntity.class);
+        verify(trainingBlockRepository).saveAndFlush(saved.capture());
+        assertEquals(COACH_ID, saved.getValue().getCoachId());
+        assertEquals("Sample", saved.getValue().getTrainingBlockName());
+        assertEquals(8, saved.getValue().getNumberOfWeeks());
+        assertEquals(5, saved.getValue().getTrainingDays());
+        assertEquals(2400, saved.getValue().getEstimatedMacros());
+        assertEquals(160, saved.getValue().getTargetProteinInGrams());
+        assertEquals(220, saved.getValue().getTargetCarbsInGrams());
+        assertEquals(65, saved.getValue().getTargetFatInGrams());
+        assertEquals(CLIENT_ID, response.clientId());
+        assertEquals("Sample", response.trainingBlockName());
+        assertEquals(8, response.numberOfWeeks());
+        assertEquals(5, response.trainingDays());
+        assertEquals(2400, response.estimatedMacros());
+        assertEquals(160, response.targetProteinInGrams());
+        assertEquals(220, response.targetCarbsInGrams());
+        assertEquals(65, response.targetFatInGrams());
+        assertEquals(TrainingBlockStatus.ACTIVE, response.status());
+        assertEquals("Upper/Lower", response.trainingSplit());
+        assertEquals("Travel notes", response.otherNotes());
+        assertEquals(8000, response.requiredDailySteps());
+        assertTrue(response.id() != null);
+        verify(relationshipRepository).findByCoachIdAndClientIdForUpdate(COACH_ID, CLIENT_ID);
+    }
+
+    @Test
+    void deniesCoachWithoutRelationship() {
+        when(relationshipRepository.findByCoachIdAndClientIdForUpdate(COACH_ID,
+                                                                      CLIENT_ID)).thenReturn(Optional.empty());
+
+        assertThrows(ForbiddenException.class, () -> service.createTrainingBlock(CLIENT_ID, REQUEST));
+        verify(trainingBlockRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    void deniesInactiveRelationship() {
+        relationship("inactive");
+
+        assertThrows(ForbiddenException.class, () -> service.createTrainingBlock(CLIENT_ID, REQUEST));
+        verify(trainingBlockRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    void rejectsSecondActiveBlock() {
+        relationship("active");
+        when(clientProfileRepository.existsByUserId(CLIENT_ID)).thenReturn(true);
+        when(trainingBlockRepository.existsByCoachIdAndClientIdAndStatus(COACH_ID,
+                                                                         CLIENT_ID,
+                                                                         TrainingBlockStatus.ACTIVE)).thenReturn(true);
+
+        assertThrows(ConflictException.class, () -> service.createTrainingBlock(CLIENT_ID, REQUEST));
+        verify(trainingBlockRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    void rejectsMissingClientProfile() {
+        relationship("active");
+
+        assertThrows(NotFoundException.class, () -> service.createTrainingBlock(CLIENT_ID, REQUEST));
+        verify(trainingBlockRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    void rejectsInternalTokenEvenWithUserId() {
+        AuthContext.set(new AuthUser(COACH_ID.toString(), null, null, null, null), true);
+
+        assertThrows(ForbiddenException.class, () -> service.createTrainingBlock(CLIENT_ID, REQUEST));
+        verify(relationshipRepository, never()).findByCoachIdAndClientIdForUpdate(any(), any());
+    }
+
+    private void relationship(String status) {
+        CoachClientRelationshipEntity relationship = new CoachClientRelationshipEntity();
+        relationship.setStatus(status);
+        when(relationshipRepository.findByCoachIdAndClientIdForUpdate(COACH_ID,
+                                                                      CLIENT_ID)).thenReturn(Optional.of(relationship));
+    }
+}

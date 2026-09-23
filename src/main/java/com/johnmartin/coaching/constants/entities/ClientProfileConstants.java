@@ -1,8 +1,8 @@
 package com.johnmartin.coaching.constants.entities;
 
-public final class CoachProfileConstants {
+public final class ClientProfileConstants {
 
-    private CoachProfileConstants() {
+    private ClientProfileConstants() {
     }
 
     public static final String TABLE_NAME = "client_profiles";
@@ -16,15 +16,4 @@ public final class CoachProfileConstants {
     public static final String COLUMN_FITNESS_GOAL = "fitness_goal";
     public static final String COLUMN_CREATED_AT = "created_at";
     public static final String COLUMN_UPDATED_AT = "updated_at";
-
-    public static final class CoachClientRelationship {
-
-        private CoachClientRelationship() {
-        }
-
-        public static final String TABLE_NAME = "coach_client_relationships";
-        public static final String COLUMN_COACH_ID = "coach_id";
-        public static final String COLUMN_CLIENT_ID = "client_id";
-        public static final String COLUMN_STATUS = "status";
-    }
 }

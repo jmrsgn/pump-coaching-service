@@ -24,30 +24,30 @@ coaching-owned data.
 
 The Coaching Service owns:
 
--   Coach-client relationships
--   Client enrollment and coaching relationship state
--   Coaching profiles and client coaching data
--   Coaching-specific client information
--   Training blocks and training-plan data where implemented
--   Coaching directives and plan-related data where implemented
--   Coaching-specific progress data where implemented
--   Coaching business rules
--   Coaching-owned PostgreSQL persistence
+- Coach-client relationships
+- Client enrollment and coaching relationship state
+- Coaching profiles and client coaching data
+- Coaching-specific client information
+- Training blocks and training-plan data where implemented
+- Coaching directives and plan-related data where implemented
+- Coaching-specific progress data where implemented
+- Coaching business rules
+- Coaching-owned PostgreSQL persistence
 
 The Coaching Service does not own:
 
--   User credentials
--   Authentication identity
--   JWT issuance
--   Authentication-related account verification
--   Auth-owned roles or authentication data
--   Social profiles
--   Posts
--   Likes
--   Comments
--   Replies
--   Follows
--   Other Auth or Social domain data
+- User credentials
+- Authentication identity
+- JWT issuance
+- Authentication-related account verification
+- Auth-owned roles or authentication data
+- Social profiles
+- Posts
+- Likes
+- Comments
+- Replies
+- Follows
+- Other Auth or Social domain data
 
 Do not move responsibilities into Coaching merely because coaching
 functionality references a user.
@@ -62,13 +62,13 @@ to the Coaching Service.
 
 The Coaching Service currently uses:
 
--   Java 17
--   Spring Boot
--   Spring Data JPA
--   PostgreSQL
--   Maven
--   HTTP-based service-to-service communication where applicable
--   Spring `RestClient` where applicable
+- Java 17
+- Spring Boot
+- Spring Data JPA
+- PostgreSQL
+- Maven
+- HTTP-based service-to-service communication where applicable
+- Spring `RestClient` where applicable
 
 Use the actual repository configuration and implementation as the source
 of truth for exact versions, libraries, profiles, and runtime behavior.
@@ -101,12 +101,12 @@ service/client boundary rather than leaking into unrelated layers.
 
 Before adding or changing functionality:
 
-1.  Inspect the nearest equivalent implementation.
-2.  Trace the request through the relevant application layers.
-3.  Identify existing abstractions that can be reused.
-4.  Determine the minimum set of components that need to change.
-5.  Preserve existing dependency direction and responsibilities.
-6.  Avoid introducing new layers merely for architectural symmetry.
+1. Inspect the nearest equivalent implementation.
+2. Trace the request through the relevant application layers.
+3. Identify existing abstractions that can be reused.
+4. Determine the minimum set of components that need to change.
+5. Preserve existing dependency direction and responsibilities.
+6. Avoid introducing new layers merely for architectural symmetry.
 
 Do not assume a theoretically cleaner structure is automatically better
 than the established implementation.
@@ -154,17 +154,17 @@ Coach-client relationships are Coaching-owned resources.
 
 When modifying coach-client relationship behavior, inspect and consider:
 
--   Coach identity
--   Client identity
--   Relationship uniqueness
--   Relationship status
--   Enrollment behavior
--   Activation or deactivation behavior where implemented
--   Authorization
--   Duplicate requests
--   Existing database constraints
--   Effects on coaching-owned resources
--   API compatibility
+- Coach identity
+- Client identity
+- Relationship uniqueness
+- Relationship status
+- Enrollment behavior
+- Activation or deactivation behavior where implemented
+- Authorization
+- Duplicate requests
+- Existing database constraints
+- Effects on coaching-owned resources
+- API compatibility
 
 Do not infer relationship state solely from client-side UI behavior.
 
@@ -182,15 +182,15 @@ Client coaching profiles belong to the Coaching domain.
 
 This may include coaching-relevant information such as:
 
--   Gender where implemented
--   Birth date where implemented
--   Height
--   Current weight
--   Goal weight
--   Activity level
--   Fitness goal
--   Other coaching-specific profile information confirmed by the
-    implementation
+- Gender where implemented
+- Birth date where implemented
+- Height
+- Current weight
+- Goal weight
+- Activity level
+- Fitness goal
+- Other coaching-specific profile information confirmed by the
+  implementation
 
 Do not treat coaching profile data as authentication identity.
 
@@ -199,13 +199,13 @@ credentials.
 
 When modifying coaching profiles:
 
--   Validate fields server-side.
--   Preserve ownership and authorization.
--   Preserve existing nullability and optional-field behavior.
--   Consider database constraints.
--   Consider compatibility with existing consumers.
--   Do not invent profile fields or health/fitness semantics not
-    established by the implementation or requirement.
+- Validate fields server-side.
+- Preserve ownership and authorization.
+- Preserve existing nullability and optional-field behavior.
+- Consider database constraints.
+- Consider compatibility with existing consumers.
+- Do not invent profile fields or health/fitness semantics not
+  established by the implementation or requirement.
 
 Use the actual entity, DTO, validation, and persistence model as the
 source of truth for exact fields and constraints.
@@ -219,20 +219,20 @@ to Coaching where implemented.
 
 When modifying training-plan behavior, inspect and consider:
 
--   Coach-client relationship
--   Ownership
--   Authorization
--   Plan lifecycle
--   Start/end or week structure where implemented
--   Training split
--   Exercise-related data where implemented
--   Nutrition/macronutrient targets where implemented
--   Step targets where implemented
--   Notes or directives where implemented
--   Current/active plan semantics
--   Historical plan behavior
--   Database constraints
--   API compatibility
+- Coach-client relationship
+- Ownership
+- Authorization
+- Plan lifecycle
+- Start/end or week structure where implemented
+- Training split
+- Exercise-related data where implemented
+- Nutrition/macronutrient targets where implemented
+- Step targets where implemented
+- Notes or directives where implemented
+- Current/active plan semantics
+- Historical plan behavior
+- Database constraints
+- API compatibility
 
 Do not invent plan lifecycle rules, active-plan semantics, exercise
 modeling, nutrition calculations, or progression logic that cannot be
@@ -249,18 +249,18 @@ the coaching relationship or coaching plan.
 
 When modifying progress behavior, inspect and consider:
 
--   Client ownership
--   Coach access
--   Date/time semantics
--   Measurement units
--   Historical records
--   Ordering
--   Duplicate entries
--   Update/delete behavior
--   Relationship to an active or historical training plan where
-    applicable
--   Authorization
--   API compatibility
+- Client ownership
+- Coach access
+- Date/time semantics
+- Measurement units
+- Historical records
+- Ordering
+- Duplicate entries
+- Update/delete behavior
+- Relationship to an active or historical training plan where
+  applicable
+- Authorization
+- API compatibility
 
 Do not infer progress calculations or analytics from UI mockups alone.
 
@@ -280,14 +280,14 @@ it.
 
 For protected Coaching operations:
 
--   Authenticate requests using the established Pump mechanism.
--   Use trusted server-side identity rather than trusting arbitrary user
-    IDs from the client.
--   Preserve the existing token-validation or Auth-validation boundary.
--   Do not issue authentication tokens.
--   Do not store user credentials.
--   Do not reproduce Auth credential logic.
--   Do not weaken authentication to make a Coaching request succeed.
+- Authenticate requests using the established Pump mechanism.
+- Use trusted server-side identity rather than trusting arbitrary user
+  IDs from the client.
+- Preserve the existing token-validation or Auth-validation boundary.
+- Do not issue authentication tokens.
+- Do not store user credentials.
+- Do not reproduce Auth credential logic.
+- Do not weaken authentication to make a Coaching request succeed.
 
 Use the existing implementation as the source of truth for the exact
 authentication flow.
@@ -304,22 +304,22 @@ on both identity and coaching relationships.
 
 For Coaching-owned resources:
 
--   Enforce authorization server-side.
--   Verify coach-client relationships when access depends on that
-    relationship.
--   Verify resource ownership where applicable.
--   Do not rely on UI visibility as authorization.
--   Do not trust a coach ID or client ID supplied by the caller when
-    authenticated identity should determine the actor.
--   Consider IDOR risks whenever an API accepts user, client, coach,
-    relationship, profile, plan, or progress identifiers.
--   Protect coach-only operations explicitly.
--   Protect client-only operations explicitly where the domain requires
-    it.
--   Prevent one coach from accessing or mutating another coach's client
-    data unless explicitly authorized.
--   Prevent one client from accessing or mutating another client's
-    coaching data unless explicitly authorized.
+- Enforce authorization server-side.
+- Verify coach-client relationships when access depends on that
+  relationship.
+- Verify resource ownership where applicable.
+- Do not rely on UI visibility as authorization.
+- Do not trust a coach ID or client ID supplied by the caller when
+  authenticated identity should determine the actor.
+- Consider IDOR risks whenever an API accepts user, client, coach,
+  relationship, profile, plan, or progress identifiers.
+- Protect coach-only operations explicitly.
+- Protect client-only operations explicitly where the domain requires
+  it.
+- Prevent one coach from accessing or mutating another coach's client
+  data unless explicitly authorized.
+- Prevent one client from accessing or mutating another client's
+  coaching data unless explicitly authorized.
 
 The Coaching Service is responsible for authorization over the resources
 it owns.
@@ -336,12 +336,12 @@ relationship from authoritative Coaching-owned data.
 
 Do not assume that:
 
--   A caller is a coach merely because a coach ID was supplied.
--   A caller is the client merely because a client ID was supplied.
--   A coach may access every client.
--   A historical or inactive relationship grants the same access as an
-    active relationship.
--   UI navigation proves authorization.
+- A caller is a coach merely because a coach ID was supplied.
+- A caller is the client merely because a client ID was supplied.
+- A coach may access every client.
+- A historical or inactive relationship grants the same access as an
+  active relationship.
+- UI navigation proves authorization.
 
 Use the authenticated identity together with the established Coaching
 relationship model.
@@ -358,18 +358,18 @@ Treat Coaching APIs as long-lived contracts.
 
 Before changing an existing endpoint, determine:
 
--   Existing consumers
--   Request contract
--   Response contract
--   Validation behavior
--   Authentication requirements
--   Authorization requirements
--   Relationship requirements
--   Error behavior
--   Pagination behavior where applicable
--   Sorting behavior where applicable
--   Important side effects
--   Compatibility impact
+- Existing consumers
+- Request contract
+- Response contract
+- Validation behavior
+- Authentication requirements
+- Authorization requirements
+- Relationship requirements
+- Error behavior
+- Pagination behavior where applicable
+- Sorting behavior where applicable
+- Important side effects
+- Compatibility impact
 
 Prefer resource-oriented APIs and established HTTP semantics where
 consistent with the existing service.
@@ -408,14 +408,14 @@ Never allow Coaching to directly query another service's database.
 
 Do not:
 
--   Share another service's database tables or collections.
--   Give Coaching repository-level access to another service's
-    persistence.
--   Reproduce Auth credential/authentication logic.
--   Reproduce Social business logic.
--   Move another domain's data into Coaching merely to avoid an API
-    call.
--   Expose Coaching database internals as a cross-service contract.
+- Share another service's database tables or collections.
+- Give Coaching repository-level access to another service's
+  persistence.
+- Reproduce Auth credential/authentication logic.
+- Reproduce Social business logic.
+- Move another domain's data into Coaching merely to avoid an API
+  call.
+- Expose Coaching database internals as a cross-service contract.
 
 Cross-service requests should retrieve only the information required by
 the Coaching capability.
@@ -427,14 +427,14 @@ unavailable.
 
 Where a cross-service call is required, consider:
 
--   Timeouts
--   Failure behavior
--   Error translation
--   Retry safety
--   Partial failure
--   Response compatibility
--   Observability
--   Whether batching is available or appropriate
+- Timeouts
+- Failure behavior
+- Error translation
+- Retry safety
+- Partial failure
+- Response compatibility
+- Observability
+- Whether batching is available or appropriate
 
 Do not introduce asynchronous messaging unless it is already established
 or explicitly required.
@@ -448,14 +448,14 @@ in order to display or process coaching relationships.
 
 When retrieving user information:
 
--   Use the established service API.
--   Request only the information required by the Coaching capability.
--   Prefer batch lookup when multiple users must be resolved and an
-    established batch contract exists.
--   Avoid N+1 service calls.
--   Do not treat externally owned profile data as Coaching-owned merely
-    because it appears in a Coaching response.
--   Handle missing users and dependency failures explicitly.
+- Use the established service API.
+- Request only the information required by the Coaching capability.
+- Prefer batch lookup when multiple users must be resolved and an
+  established batch contract exists.
+- Avoid N+1 service calls.
+- Do not treat externally owned profile data as Coaching-owned merely
+  because it appears in a Coaching response.
+- Handle missing users and dependency failures explicitly.
 
 The exact owning service and available fields must be determined from
 the current implementation and confirmed service contracts.
@@ -474,17 +474,17 @@ PostgreSQL is the source of truth for Coaching-owned persisted data.
 
 When changing persistence:
 
--   Inspect the existing entity and repository model.
--   Preserve data integrity.
--   Use appropriate constraints.
--   Consider relationship uniqueness.
--   Consider nullability.
--   Consider foreign-key behavior within the Coaching-owned database.
--   Consider indexing based on actual query patterns.
--   Consider transaction boundaries.
--   Consider migration compatibility.
--   Avoid destructive schema changes without explicit justification and
-    migration planning.
+- Inspect the existing entity and repository model.
+- Preserve data integrity.
+- Use appropriate constraints.
+- Consider relationship uniqueness.
+- Consider nullability.
+- Consider foreign-key behavior within the Coaching-owned database.
+- Consider indexing based on actual query patterns.
+- Consider transaction boundaries.
+- Consider migration compatibility.
+- Avoid destructive schema changes without explicit justification and
+  migration planning.
 
 Database constraints should protect important invariants where
 appropriate rather than relying entirely on application code.
@@ -501,16 +501,16 @@ patterns.
 
 Before adding or changing persisted state, consider:
 
--   Ownership
--   Relationship cardinality
--   Uniqueness
--   Nullability
--   Lifecycle
--   Historical data requirements
--   Query patterns
--   Index requirements
--   Transaction requirements
--   Compatibility with existing data
+- Ownership
+- Relationship cardinality
+- Uniqueness
+- Nullability
+- Lifecycle
+- Historical data requirements
+- Query patterns
+- Index requirements
+- Transaction requirements
+- Compatibility with existing data
 
 Avoid multiple independently mutable sources of truth for the same
 coaching state.
@@ -535,11 +535,11 @@ transaction.
 
 Consider:
 
--   Coach-client relationship state
--   Profile state
--   Training-plan state
--   Progress records
--   Derived or dependent Coaching-owned state
+- Coach-client relationship state
+- Profile state
+- Training-plan state
+- Progress records
+- Derived or dependent Coaching-owned state
 
 Do not add broad transaction boundaries without understanding their
 purpose.
@@ -558,17 +558,17 @@ Treat all external input as untrusted.
 Validation should occur at appropriate boundaries and include, where
 relevant:
 
--   Required values
--   Format
--   Length
--   Allowed values
--   Numeric ranges
--   Resource identifiers
--   Relationship invariants
--   Uniqueness
--   Business invariants
--   Ownership-sensitive input
--   Security-sensitive restrictions
+- Required values
+- Format
+- Length
+- Allowed values
+- Numeric ranges
+- Resource identifiers
+- Relationship invariants
+- Uniqueness
+- Business invariants
+- Ownership-sensitive input
+- Security-sensitive restrictions
 
 Do not rely solely on a client application to validate input.
 
@@ -591,15 +591,15 @@ Use the Coaching Service's established error model.
 Distinguish meaningful categories where supported by the implementation,
 including:
 
--   Validation failure
--   Authentication failure
--   Authorization failure
--   Resource not found
--   Relationship not found or invalid relationship state where
-    established
--   Conflict
--   Dependency failure
--   Internal failure
+- Validation failure
+- Authentication failure
+- Authorization failure
+- Resource not found
+- Relationship not found or invalid relationship state where
+  established
+- Conflict
+- Dependency failure
+- Internal failure
 
 Do not expose stack traces, secrets, tokens, database internals, or
 other sensitive implementation details through API responses.
@@ -619,21 +619,21 @@ sensitive data.
 
 Useful context may include:
 
--   Request/correlation ID
--   Operation
--   Failure category
--   Relevant non-sensitive resource identifiers
--   Dependency failure
--   Unexpected exception context
+- Request/correlation ID
+- Operation
+- Failure category
+- Relevant non-sensitive resource identifiers
+- Dependency failure
+- Unexpected exception context
 
 Avoid logging:
 
--   Full JWTs
--   Credentials or secrets
--   Sensitive request payloads
--   Unnecessary personal or coaching-profile data
--   Large plan/progress payloads when identifiers and operation context
-    are sufficient
+- Full JWTs
+- Credentials or secrets
+- Sensitive request payloads
+- Unnecessary personal or coaching-profile data
+- Large plan/progress payloads when identifiers and operation context
+  are sufficient
 
 Preserve existing correlation and structured logging conventions.
 
@@ -649,15 +649,15 @@ failures, retries, and duplicate requests.
 
 Consider:
 
--   Failure behavior
--   Timeouts for external dependencies
--   Retry safety
--   Idempotency
--   Duplicate requests
--   Partial failures
--   PostgreSQL availability
--   Cross-service effects
--   Recovery behavior
+- Failure behavior
+- Timeouts for external dependencies
+- Retry safety
+- Idempotency
+- Duplicate requests
+- Partial failures
+- PostgreSQL availability
+- Cross-service effects
+- Recovery behavior
 
 Do not assume dependencies are always available.
 
@@ -676,15 +676,15 @@ over micro-optimization.
 
 Still consider:
 
--   Database query efficiency
--   Appropriate indexes
--   N+1 database queries
--   N+1 service calls
--   Unnecessary network calls
--   Response size
--   Serialization costs
--   Pagination where collections can grow
--   Batch operations where justified
+- Database query efficiency
+- Appropriate indexes
+- N+1 database queries
+- N+1 service calls
+- Unnecessary network calls
+- Response size
+- Serialization costs
+- Pagination where collections can grow
+- Batch operations where justified
 
 Measure before optimizing.
 
@@ -698,23 +698,23 @@ Meaningful Coaching changes should be verified at the appropriate level.
 
 Depending on the change, consider:
 
--   Unit tests
--   Service tests
--   Repository tests
--   Controller/API tests
--   Integration tests
--   Authentication tests
--   Authorization tests
--   Relationship-based authorization tests
--   Validation tests
--   Persistence constraints
--   Coach-client relationship behavior
--   Profile behavior
--   Training-plan behavior where applicable
--   Progress behavior where applicable
--   Duplicate-request/idempotency behavior
--   Cross-service dependency failure
--   Regression tests for bugs
+- Unit tests
+- Service tests
+- Repository tests
+- Controller/API tests
+- Integration tests
+- Authentication tests
+- Authorization tests
+- Relationship-based authorization tests
+- Validation tests
+- Persistence constraints
+- Coach-client relationship behavior
+- Profile behavior
+- Training-plan behavior where applicable
+- Progress behavior where applicable
+- Duplicate-request/idempotency behavior
+- Cross-service dependency failure
+- Regression tests for bugs
 
 Prioritize observable behavior, authorization, and domain boundaries
 over implementation details.
@@ -736,15 +736,15 @@ verification when the scope warrants it.
 
 Before proposing or implementing a change:
 
-1.  Inspect the relevant Coaching implementation.
-2.  Understand the current request and coaching-domain flow.
-3.  Identify affected layers and components.
-4.  Check existing conventions and patterns.
-5.  Check relevant tests.
-6.  Check relevant configuration.
-7.  Determine PostgreSQL/schema impact.
-8.  Determine API compatibility impact.
-9.  Determine authentication and authorization impact.
+1. Inspect the relevant Coaching implementation.
+2. Understand the current request and coaching-domain flow.
+3. Identify affected layers and components.
+4. Check existing conventions and patterns.
+5. Check relevant tests.
+6. Check relevant configuration.
+7. Determine PostgreSQL/schema impact.
+8. Determine API compatibility impact.
+9. Determine authentication and authorization impact.
 10. Determine coach-client relationship impact.
 11. Determine whether another Pump service is affected.
 12. Determine consistency, idempotency, or migration impact where
@@ -762,15 +762,15 @@ Keep changes narrowly focused on the requested outcome.
 
 Do not introduce unrelated:
 
--   Refactors
--   Formatting changes
--   Dependency upgrades
--   Architecture changes
--   Database/schema changes
--   Security changes
--   Infrastructure changes
--   Generated-file changes
--   Naming changes
+- Refactors
+- Formatting changes
+- Dependency upgrades
+- Architecture changes
+- Database/schema changes
+- Security changes
+- Infrastructure changes
+- Generated-file changes
+- Naming changes
 
 unless required by the requested change or explicitly requested.
 
@@ -783,35 +783,35 @@ instead of silently implementing it.
 
 Do not invent:
 
--   API contracts
--   Database schema
--   Coach-client relationship semantics
--   Coaching status semantics
--   Profile fields
--   Training-plan lifecycle
--   Training-block behavior
--   Exercise modeling
--   Nutrition calculations
--   Progress calculations
--   Authentication behavior
--   Authorization rules
--   Configuration values
--   Cross-service requirements
--   Business rules
+- API contracts
+- Database schema
+- Coach-client relationship semantics
+- Coaching status semantics
+- Profile fields
+- Training-plan lifecycle
+- Training-block behavior
+- Exercise modeling
+- Nutrition calculations
+- Progress calculations
+- Authentication behavior
+- Authorization rules
+- Configuration values
+- Cross-service requirements
+- Business rules
 
 When important information is unavailable:
 
-1.  Identify what is missing.
-2.  Explain why it matters.
-3.  Inspect the repository when the answer should already exist there.
-4.  Ask for clarification when necessary.
+1. Identify what is missing.
+2. Explain why it matters.
+3. Inspect the repository when the answer should already exist there.
+4. Ask for clarification when necessary.
 
 Clearly distinguish:
 
--   Confirmed requirements
--   Observed implementation
--   Engineering recommendations
--   Assumptions
+- Confirmed requirements
+- Observed implementation
+- Engineering recommendations
+- Assumptions
 
 Never present an assumption as established Coaching behavior.
 
@@ -821,12 +821,12 @@ Never present an assumption as established Coaching behavior.
 
 Before adding a dependency:
 
-1.  Determine whether the existing stack already solves the problem.
-2.  Explain why the dependency is necessary.
-3.  Consider maintenance and security implications.
-4.  Consider operational and deployment impact.
-5.  Prefer mature and well-supported dependencies.
-6.  Avoid adding a dependency for trivial functionality.
+1. Determine whether the existing stack already solves the problem.
+2. Explain why the dependency is necessary.
+3. Consider maintenance and security implications.
+4. Consider operational and deployment impact.
+5. Prefer mature and well-supported dependencies.
+6. Avoid adding a dependency for trivial functionality.
 
 Do not upgrade unrelated dependencies as part of a feature unless
 required.
@@ -839,29 +839,59 @@ Follow existing Java and Spring conventions in this repository.
 
 Prefer:
 
--   Clear names
--   Small cohesive methods
--   Explicit responsibilities
--   Constructor injection where consistent with the project
--   Immutable data where practical
--   Existing abstractions
--   Straightforward control flow
--   Domain-appropriate validation
--   Explicit ownership and authorization rules
+- Clear names
+- Small cohesive methods
+- Explicit responsibilities
+- Constructor injection where consistent with the project
+- Immutable data where practical
+- Existing abstractions
+- Straightforward control flow
+- Domain-appropriate validation
+- Explicit ownership and authorization rules
 
 Avoid:
 
--   God classes
--   Hidden side effects
--   Duplicated cross-service business logic
--   Unnecessary abstractions
--   Premature generic frameworks
--   Deeply nested logic
--   Duplicated sources of truth
--   Authorization behavior that depends on undocumented assumptions
+- God classes
+- Hidden side effects
+- Duplicated cross-service business logic
+- Unnecessary abstractions
+- Premature generic frameworks
+- Deeply nested logic
+- Duplicated sources of truth
+- Authorization behavior that depends on undocumented assumptions
 
 Comments should explain why when the reason is not obvious, rather than
 narrating what the code already says.
+
+## Constants and Messages
+
+For constants that represent fixed message strings:
+
+- The constant identifier must contain exactly the same words as the message value, in the same order.
+- Convert the message value to `UPPER_SNAKE_CASE` for the constant identifier.
+- Do not abbreviate, reword, add, remove, or reorder words.
+- Preserve the established capitalization style of message values.
+
+Error and validation messages returned through API responses are user-facing and may be displayed directly by client
+applications.
+
+When adding or modifying user-facing messages:
+
+- Write messages for the end user, not for backend developers.
+- Use clear, concise, and understandable language that explains what went wrong.
+- When appropriate, explain what is required or what the user can correct.
+- Prefer specific messages over vague messages such as `"Invalid Request"`, `"Operation Failed"`, or `"Bad Input"`.
+- Do not expose implementation details such as entity names, repository behavior, database constraints, internal service
+  names, stack traces, or technical exception terminology.
+- Do not expose sensitive information or reveal protected resource information that the user is not authorized to
+  access.
+- Write messages so client applications can display them directly without needing to rewrite them.
+
+Examples:
+
+- `"Sample Message"` → `SAMPLE_MESSAGE`
+- `"Number Of Weeks Cannot Be Null"` → `NUMBER_OF_WEEKS_CANNOT_BE_NULL`
+- `"Training Split Cannot Be Null"` → `TRAINING_SPLIT_CANNOT_BE_NULL`
 
 ------------------------------------------------------------------------
 
@@ -871,28 +901,28 @@ Do not introduce significant architecture changes casually.
 
 For changes involving:
 
--   Coaching service boundaries
--   Coaching database ownership
--   Coach-client relationship model
--   Training-plan architecture
--   Cross-service communication
--   Authentication integration
--   Relationship-based authorization
--   Coaching consistency model
--   Asynchronous messaging
--   Major framework or technology changes
+- Coaching service boundaries
+- Coaching database ownership
+- Coach-client relationship model
+- Training-plan architecture
+- Cross-service communication
+- Authentication integration
+- Relationship-based authorization
+- Coaching consistency model
+- Asynchronous messaging
+- Major framework or technology changes
 
 explain:
 
--   Context
--   Problem
--   Options considered
--   Proposed decision
--   Tradeoffs
--   Data consistency implications
--   Security implications
--   Compatibility implications
--   Operational consequences
+- Context
+- Problem
+- Options considered
+- Proposed decision
+- Tradeoffs
+- Data consistency implications
+- Security implications
+- Compatibility implications
+- Operational consequences
 
 Use an ADR when the decision has meaningful long-term architectural
 impact.
@@ -903,15 +933,15 @@ impact.
 
 When reviewing Coaching Service changes, prioritize:
 
-1.  Correctness
-2.  Authorization and relationship-based access
-3.  Coaching-domain boundaries
-4.  API contract compatibility
-5.  Data integrity and consistency
-6.  PostgreSQL schema/query correctness
-7.  Authentication integration
-8.  Coach-client relationship correctness
-9.  Cross-service dependency behavior
+1. Correctness
+2. Authorization and relationship-based access
+3. Coaching-domain boundaries
+4. API contract compatibility
+5. Data integrity and consistency
+6. PostgreSQL schema/query correctness
+7. Authentication integration
+8. Coach-client relationship correctness
+9. Cross-service dependency behavior
 10. Idempotency and duplicate-request behavior
 11. Error behavior
 12. Reliability
@@ -938,10 +968,10 @@ consistency, API behavior, or cross-service communication.
 
 When proposing an improvement:
 
--   Explain what should change.
--   Explain why.
--   Explain the tradeoffs.
--   Explain whether it belongs in the current scope.
+- Explain what should change.
+- Explain why.
+- Explain the tradeoffs.
+- Explain whether it belongs in the current scope.
 
 Challenge unsafe or fragile approaches rather than implementing them
 silently.
@@ -955,20 +985,20 @@ theoretical concerns.
 
 At the completion of meaningful work, summarize:
 
--   What changed
--   Why it changed
--   Files/components affected
--   API impact
--   PostgreSQL/schema impact
--   Authentication/authorization impact
--   Coach-client relationship impact
--   Cross-service impact
--   Consistency/idempotency implications
--   Tests or verification performed
--   Configuration impact
--   Remaining risks
--   Assumptions or uncertainties
--   Recommended follow-up work, if any
+- What changed
+- Why it changed
+- Files/components affected
+- API impact
+- PostgreSQL/schema impact
+- Authentication/authorization impact
+- Coach-client relationship impact
+- Cross-service impact
+- Consistency/idempotency implications
+- Tests or verification performed
+- Configuration impact
+- Remaining risks
+- Assumptions or uncertainties
+- Recommended follow-up work, if any
 
 Clearly distinguish completed work from suggested future improvements.
 
@@ -978,22 +1008,22 @@ Clearly distinguish completed work from suggested future improvements.
 
 When operating through Codex in this repository:
 
--   Inspect before editing.
--   Use the repository implementation as the source of truth for current
-    behavior.
--   Keep changes within the Coaching Service unless explicitly asked
-    otherwise.
--   Do not modify another Pump repository as a side effect.
--   Do not invent missing contracts, schema, relationship semantics, or
-    configuration.
--   Do not expose secrets or sensitive authentication/coaching data in
-    output.
--   Review authorization and coach-client relationship implications
-    before completing Coaching changes.
--   Run relevant tests and static checks when available.
--   Report exactly what was changed and what verification was performed.
--   Report anything that could not be verified.
--   Do not silently fix unrelated issues discovered during the task.
+- Inspect before editing.
+- Use the repository implementation as the source of truth for current
+  behavior.
+- Keep changes within the Coaching Service unless explicitly asked
+  otherwise.
+- Do not modify another Pump repository as a side effect.
+- Do not invent missing contracts, schema, relationship semantics, or
+  configuration.
+- Do not expose secrets or sensitive authentication/coaching data in
+  output.
+- Review authorization and coach-client relationship implications
+  before completing Coaching changes.
+- Run relevant tests and static checks when available.
+- Report exactly what was changed and what verification was performed.
+- Report anything that could not be verified.
+- Do not silently fix unrelated issues discovered during the task.
 
 ------------------------------------------------------------------------
 
@@ -1002,25 +1032,25 @@ When operating through Codex in this repository:
 The following constraints should be preserved unless an explicit
 architectural decision changes them:
 
--   Coaching owns coach-client relationships.
--   Coaching owns client enrollment and coaching relationship state.
--   Coaching owns coaching-specific client profiles and coaching data.
--   Coaching owns training blocks and training-plan data where
-    implemented.
--   Coaching persists Coaching-owned data in PostgreSQL.
--   Other Pump services must not directly access the Coaching database.
--   Coaching does not own authentication identity or credentials.
--   Authentication identity remains owned by the Auth Service.
--   Coaching does not own Social-domain data.
--   Cross-service data access must use explicit service boundaries.
--   HTTP-based service-to-service communication is used where
-    applicable.
--   Spring `RestClient` is used for HTTP communication where established
-    by the implementation.
--   Coaching resource authorization must be enforced server-side.
--   Coach-client relationship checks must be enforced server-side where
-    access depends on that relationship.
--   Existing consumers should remain compatible where practical.
+- Coaching owns coach-client relationships.
+- Coaching owns client enrollment and coaching relationship state.
+- Coaching owns coaching-specific client profiles and coaching data.
+- Coaching owns training blocks and training-plan data where
+  implemented.
+- Coaching persists Coaching-owned data in PostgreSQL.
+- Other Pump services must not directly access the Coaching database.
+- Coaching does not own authentication identity or credentials.
+- Authentication identity remains owned by the Auth Service.
+- Coaching does not own Social-domain data.
+- Cross-service data access must use explicit service boundaries.
+- HTTP-based service-to-service communication is used where
+  applicable.
+- Spring `RestClient` is used for HTTP communication where established
+  by the implementation.
+- Coaching resource authorization must be enforced server-side.
+- Coach-client relationship checks must be enforced server-side where
+  access depends on that relationship.
+- Existing consumers should remain compatible where practical.
 
 ------------------------------------------------------------------------
 
@@ -1031,16 +1061,16 @@ coaching domain.
 
 Prefer:
 
--   Correctness over shortcuts
--   Explicit ownership over blurred service boundaries
--   Server-side authorization over client trust
--   Authoritative relationship state over caller-provided assumptions
--   Clear consistency rules over hidden side effects
--   Simplicity over cleverness
--   Consistency over personal preference
--   Maintainability over premature optimization
--   Backward-compatible evolution over casual contract changes
--   Evidence over assumptions
+- Correctness over shortcuts
+- Explicit ownership over blurred service boundaries
+- Server-side authorization over client trust
+- Authoritative relationship state over caller-provided assumptions
+- Clear consistency rules over hidden side effects
+- Simplicity over cleverness
+- Consistency over personal preference
+- Maintainability over premature optimization
+- Backward-compatible evolution over casual contract changes
+- Evidence over assumptions
 
 Coaching data represents relationships and plans that can affect what
 different users are allowed to see and modify.

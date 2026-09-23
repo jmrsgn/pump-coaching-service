@@ -5,9 +5,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.johnmartin.coaching.entity.CoachClientRelationshipEntity;
+import jakarta.persistence.LockModeType;
 
 @Repository
 public interface CoachClientRelationshipRepository extends JpaRepository<CoachClientRelationshipEntity, UUID> {
@@ -15,6 +18,10 @@ public interface CoachClientRelationshipRepository extends JpaRepository<CoachCl
     boolean existsByCoachIdAndClientId(UUID coachId, UUID clientId);
 
     Optional<CoachClientRelationshipEntity> findByCoachIdAndClientId(UUID coachId, UUID clientId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT relationship FROM CoachClientRelationshipEntity relationship WHERE relationship.coachId = :coachId AND relationship.clientId = :clientId")
+    Optional<CoachClientRelationshipEntity> findByCoachIdAndClientIdForUpdate(UUID coachId, UUID clientId);
 
     void deleteByClientId(UUID clientId);
 

@@ -17,10 +17,17 @@ public final class ApiConstants {
         public static final String ACTUATOR = "/actuator";
         public static final String HEALTH = "/health";
 
-        // User
+        // Users
         public static final String API_USERS = API_BASE_V1 + "/users";
-        public static final String CREATE_USER = "/create";
         public static final String SEARCH_USER = "/search";
+
+        // Clients
+        public static final String API_CLIENTS = API_BASE_V1 + "/clients";
+        public static final String CREATE_CLIENT = "/create";
+
+        // Training Block
+        public static final String API_TRAINING_BLOCKS = API_CLIENTS + "/{clientId}/training-blocks";
+        public static final String CREATE_TRAINING_BLOCK = "/create";
     }
 
     public static final class Params {

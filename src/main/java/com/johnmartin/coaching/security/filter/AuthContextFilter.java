@@ -76,19 +76,19 @@ public class AuthContextFilter extends BaseFilter {
 
         // User is already authenticated, userId is the one only needed
         AuthUser authUser = new AuthUser(userId, null, null, null, null);
-        authenticate(authUser);
+        authenticate(authUser, true);
     }
 
     private void authenticateUserRequest(String authHeader, String requestId) {
         LoggerUtility.d(clazz, "Execute method: [authenticateUserRequest]");
         LoggerUtility.d(clazz, String.format("requestId: [%s]", requestId));
         AuthUserResponse response = authServiceClient.validate(authHeader, requestId);
-        authenticate(UserMapper.toAuthUser(response));
+        authenticate(UserMapper.toAuthUser(response), false);
     }
 
-    private void authenticate(AuthUser authUser) {
+    private void authenticate(AuthUser authUser, boolean internalRequest) {
         LoggerUtility.d(clazz, "Execute method: [authenticate]");
-        AuthContext.set(authUser);
+        AuthContext.set(authUser, internalRequest);
         // REQUIRED: put authUser to Spring Security Context
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authUser,
                                                                                                      null,

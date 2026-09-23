@@ -30,6 +30,6 @@ public enum Gender {
             }
         }
 
-        throw new IllegalArgumentException(SystemErrorConstants.INVALID_GENDER + ": " + value);
+        throw new IllegalArgumentException("Invalid gender: " + value);
     }
 }
