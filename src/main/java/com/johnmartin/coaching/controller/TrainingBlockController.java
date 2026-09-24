@@ -32,7 +32,9 @@ public class TrainingBlockController {
     public ResponseEntity<Result<TrainingBlockResponse>> createTrainingBlock(@PathVariable UUID clientId,
                                                                              @Valid @RequestBody CreateTrainingBlockRequest request) {
         TrainingBlockResponse block = trainingBlockService.createTrainingBlock(clientId, request);
-        return ResponseEntity.created(URI.create(ApiConstants.Path.API_TRAINING_BLOCKS + "/" + block.id()))
+        return ResponseEntity.created(URI.create(ApiConstants.Path.API_TRAINING_BLOCKS.replace("{clientId}",
+                                                                                               clientId.toString())
+                                                 + "/" + block.id()))
                              .body(Result.success(block));
     }
 }

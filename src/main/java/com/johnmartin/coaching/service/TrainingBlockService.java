@@ -88,7 +88,7 @@ public class TrainingBlockService {
         trainingBlock.setOtherNotes(request.otherNotes() == null
                                     || request.otherNotes().isBlank() ? null : request.otherNotes().trim());
 
-        TrainingBlockEntity saved = trainingBlockRepository.save(trainingBlock);
+        TrainingBlockEntity saved = trainingBlockRepository.saveAndFlush(trainingBlock);
         LoggerUtility.d(clazz, "Training block has been saved successfully");
         return new TrainingBlockResponse(saved.getId(),
                                          saved.getClientId(),
@@ -103,6 +103,7 @@ public class TrainingBlockService {
                                          saved.getRequiredDailySteps(),
                                          saved.getOtherNotes(),
                                          saved.getStatus(),
-                                         saved.getCreatedAt());
+                                         saved.getCreatedAt(),
+                                         saved.getUpdatedAt());
     }
 }

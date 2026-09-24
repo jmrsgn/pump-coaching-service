@@ -18,5 +18,6 @@ public record TrainingBlockResponse(UUID id,
                                     Integer requiredDailySteps,
                                     String otherNotes,
                                     TrainingBlockStatus status,
-                                    Instant createdAt) {
+                                    Instant createdAt,
+                                    Instant updatedAt) {
 }
