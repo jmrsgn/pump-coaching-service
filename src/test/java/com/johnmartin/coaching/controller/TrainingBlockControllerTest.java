@@ -6,6 +6,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +52,7 @@ class TrainingBlockControllerTest {
         UUID blockId = UUID.randomUUID();
         when(service.createTrainingBlock(eq(clientId), any())).thenReturn(new TrainingBlockResponse(
                 blockId, clientId, "Sample", 8, 5, "Upper/Lower", 2400, 160, 220, 65, 8000,
-                null, TrainingBlockStatus.ACTIVE, Instant.parse("2026-09-23T00:00:00Z")));
+                null, TrainingBlockStatus.ACTIVE, Instant.parse("2026-09-23T00:00:00Z"), null));
 
         mvc.perform(post(createPath()).contentType(MediaType.APPLICATION_JSON).content(validBody()))
                 .andExpect(status().isCreated())
@@ -77,7 +78,7 @@ class TrainingBlockControllerTest {
     void acceptsZeroMacroValues(String field) throws Exception {
         when(service.createTrainingBlock(eq(clientId), any())).thenReturn(new TrainingBlockResponse(
                 UUID.randomUUID(), clientId, "Sample", 8, 5, "Upper/Lower", 0, 160, 220, 65, 8000,
-                null, TrainingBlockStatus.ACTIVE, Instant.parse("2026-09-23T00:00:00Z")));
+                null, TrainingBlockStatus.ACTIVE, Instant.parse("2026-09-23T00:00:00Z"), null));
 
         mvc.perform(post(createPath()).contentType(MediaType.APPLICATION_JSON)
                         .content(validBody().replace("\"" + field + "\":" + validValue(field),
@@ -85,6 +86,22 @@ class TrainingBlockControllerTest {
                 .andExpect(status().isCreated());
 
         verify(service).createTrainingBlock(eq(clientId), any());
+    }
+
+    @Test
+    void returnsActiveBlock() throws Exception {
+        UUID blockId = UUID.randomUUID();
+        when(service.getActiveTrainingBlock(clientId)).thenReturn(new TrainingBlockResponse(
+                blockId, clientId, "Sample", 8, 5, "Upper/Lower", 2400, 160, 220, 65, 8000,
+                null, TrainingBlockStatus.ACTIVE, Instant.parse("2026-09-23T00:00:00Z"), null));
+
+        mvc.perform(get(path() + "/active"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(blockId.toString()))
+                .andExpect(jsonPath("$.data.clientId").value(clientId.toString()))
+                .andExpect(jsonPath("$.data.status").value("Active"));
+
+        verify(service).getActiveTrainingBlock(clientId);
     }
 
     @ParameterizedTest
@@ -142,7 +159,7 @@ class TrainingBlockControllerTest {
 
     @Test
     void rejectsMalformedClientId() throws Exception {
-        mvc.perform(post("/api/v1/clients/not-a-uuid/training-blocks/create-training-block")
+        mvc.perform(post("/api/v1/clients/not-a-uuid/training-blocks/create")
                         .contentType(MediaType.APPLICATION_JSON).content(validBody()))
                 .andExpect(status().isBadRequest());
 
@@ -154,7 +171,7 @@ class TrainingBlockControllerTest {
     }
 
     private String createPath() {
-        return path() + "/create-training-block";
+        return path() + "/create";
     }
 
     private String validBody() {

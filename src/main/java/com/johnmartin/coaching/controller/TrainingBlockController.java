@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +37,10 @@ public class TrainingBlockController {
                                                                                                clientId.toString())
                                                  + "/" + block.id()))
                              .body(Result.success(block));
+    }
+
+    @GetMapping(ApiConstants.Path.ACTIVE_TRAINING_BLOCK)
+    public ResponseEntity<Result<TrainingBlockResponse>> getActiveTrainingBlock(@PathVariable UUID clientId) {
+        return ResponseEntity.ok(Result.success(trainingBlockService.getActiveTrainingBlock(clientId)));
     }
 }

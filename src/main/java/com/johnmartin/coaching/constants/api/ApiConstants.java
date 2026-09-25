@@ -28,6 +28,7 @@ public final class ApiConstants {
         // Training Block
         public static final String API_TRAINING_BLOCKS = API_CLIENTS + "/{clientId}/training-blocks";
         public static final String CREATE_TRAINING_BLOCK = "/create";
+        public static final String ACTIVE_TRAINING_BLOCK = "/active";
     }
 
     public static final class Params {

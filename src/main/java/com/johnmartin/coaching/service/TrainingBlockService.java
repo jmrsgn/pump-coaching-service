@@ -2,6 +2,7 @@ package com.johnmartin.coaching.service;
 
 import java.util.UUID;
 
+import com.johnmartin.coaching.mapper.TrainingBlockMapper;
 import com.johnmartin.coaching.utilities.LoggerUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,20 +91,32 @@ public class TrainingBlockService {
 
         TrainingBlockEntity saved = trainingBlockRepository.saveAndFlush(trainingBlock);
         LoggerUtility.d(clazz, "Training block has been saved successfully");
-        return new TrainingBlockResponse(saved.getId(),
-                                         saved.getClientId(),
-                                         saved.getTrainingBlockName(),
-                                         saved.getNumberOfWeeks(),
-                                         saved.getTrainingDays(),
-                                         saved.getTrainingSplit(),
-                                         saved.getEstimatedMacros(),
-                                         saved.getTargetProteinInGrams(),
-                                         saved.getTargetCarbsInGrams(),
-                                         saved.getTargetFatInGrams(),
-                                         saved.getRequiredDailySteps(),
-                                         saved.getOtherNotes(),
-                                         saved.getStatus(),
-                                         saved.getCreatedAt(),
-                                         saved.getUpdatedAt());
+        return TrainingBlockMapper.toResponse(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public TrainingBlockResponse getActiveTrainingBlock(UUID clientId) {
+        if (AuthContext.isInternalRequest()) {
+            throw new ForbiddenException(TrainingBlockErrorConstants.USER_AUTHENTICATION_REQUIRED);
+        }
+
+        UUID coachId = UUID.fromString(authService.getAuthUser().id());
+        CoachClientRelationshipEntity relationship = coachClientRelationshipRepository.findByCoachIdAndClientId(coachId,
+                                                                                                                clientId)
+                                                                                      .orElseThrow(() -> new ForbiddenException(TrainingBlockErrorConstants.CLIENT_IS_NOT_ENROLLED_TO_COACH));
+
+        if (!CoachingStatus.ACTIVE.getValue().equalsIgnoreCase(relationship.getStatus())) {
+            throw new ForbiddenException(TrainingBlockErrorConstants.CLIENT_IS_NOT_ENROLLED_TO_COACH);
+        }
+
+        if (!clientProfileRepository.existsByUserId(clientId)) {
+            throw new NotFoundException(TrainingBlockErrorConstants.CLIENT_NOT_FOUND);
+        }
+
+        TrainingBlockEntity trainingBlock = trainingBlockRepository.findByCoachIdAndClientIdAndStatus(coachId,
+                                                                                                      clientId,
+                                                                                                      TrainingBlockStatus.ACTIVE)
+                                                                   .orElseThrow(() -> new NotFoundException(TrainingBlockErrorConstants.NO_ACTIVE_TRAINING_BLOCK_EXISTS_FOR_THIS_CLIENT));
+        return TrainingBlockMapper.toResponse(trainingBlock);
     }
 }
