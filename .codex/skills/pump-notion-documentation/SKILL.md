@@ -23,23 +23,42 @@ The skill has two responsibilities:
 Do not invent implementation details, tests, commits, blockers, API
 contracts, architecture decisions, root causes, or verification results.
 
+## Invocation
+
+Treat `document today's work` as a request to execute the complete
+Pump documentation workflow defined by this skill for the current repository.
+
+When invoked:
+
+- inspect today's relevant repository state, Git history, commits, session
+  work, and existing Pump Notion documentation;
+- document only work supported by verifiable evidence;
+- update today's Daily Development Log;
+- update any other durable Pump documentation required by the documentation
+  routing rules;
+- preserve information already documented by other Pump repositories and
+  unrelated Notion content;
+- re-fetch and verify every affected Notion entry or page after all writes;
+- return the literal canonical Notion URL for every affected entry or page.
+
+Do not modify or commit repository files as part of the documentation request.
+
 ## Required Capability
 
-This skill requires access to Notion through the Notion MCP tools configured for the current project.
-
-Treat MCP authentication, credential loading, and MCP server startup as
-infrastructure concerns outside this skill.
+This skill requires access to Notion through the Notion tools available in
+the current session. Use the available Notion tools for documentation
+operations. Notion connection and authentication are managed outside this
+repository.
 
 Do not:
 
-- read or inspect `config/credentials.properties`;
-- read, print, log, or expose `NOTION_TOKEN`;
-- attempt to authenticate with Notion;
-- run `codex mcp login notion`;
-- start or configure the Notion MCP server manually;
-- modify `.codex/config.toml` as part of a documentation request.
+- read, print, log, or expose credentials or tokens;
+- attempt to authenticate with Notion or configure its connection manually;
+- create repository-local MCP configuration or credential files.
 
-If the required Notion MCP tools are unavailable or a Notion operation fails because access is not configured, stop the documentation operation and report the MCP/access problem without attempting to retrieve credentials.
+If the required Notion tools are unavailable or a Notion operation fails
+because access is not configured, stop the documentation operation and report
+the access problem without attempting to retrieve credentials.
 
 Never include credentials, tokens, secrets, or authentication material in
 Notion documentation.
